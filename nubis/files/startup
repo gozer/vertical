@@ -1,6 +1,10 @@
 #!/bin/bash -l
 
+exec &> >(tee /var/log/startup.log) 2>&1
+
 if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
-    echo "Enabling Huge Pages"
+    echo "Enable Transparent Hugepages"
     echo always > /sys/kernel/mm/transparent_hugepage/enabled
 fi
+
+#sudo /opt/vertica/sbin/install_vertica --add-hosts $privateIp --point-to-point --ssh-identity $autoscale_dir/key.pem -L $license --dba-user-password-disabled --data-dir /vertica/data -Y --failure-threshold HALT
