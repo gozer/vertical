@@ -1,3 +1,4 @@
+# Required Packages
 package { 'sysstat':
   ensure => 'latest',
 }
@@ -9,6 +10,20 @@ package { 'mcelog':
 package { 'gdb':
   ensure => 'latest',
 }
+
+package { 'unzip':
+  ensure => 'latest',
+}
+
+package { 'nmap':
+  ensure => 'latest',
+}
+
+python::pip { 'awscli':
+  ensure  => 'latest',
+}
+
+# System tuning
 
 sysctl { 'vm.swappiness': 
   value => '1' 
