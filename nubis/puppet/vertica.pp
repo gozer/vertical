@@ -19,6 +19,10 @@ package { 'nmap':
   ensure => 'latest',
 }
 
+package { 'dialog':
+  ensure => 'latest',
+}
+
 python::pip { 'awscli':
   ensure  => 'latest',
 }

@@ -12,7 +12,38 @@ SWAP_SIZE_MEG=4196
 SWAP_FILE=/var/swap
 
 echo "Making $SWAP_SIZE_MEG Mb of swap in $SWAP_FILE"
+
 dd if=/dev/zero of=$SWAP_FILE bs="1M" count="$SWAP_SIZE_MEG"
 chmod 600 $SWAP_FILE
 mkswap $SWAP_FILE
 swapon $SWAP_FILE
+
+echo "Managing SSH key"
+
+mkdir -p /home/dbadmin/.ssh
+chmod 700 /home/dbadmin/.ssh
+
+# For automation
+nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/secret-key > /home/dbadmin/autoscale/key.pem
+chmod 600 /home/dbadmin/autoscale/key.pem
+
+nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/secret-key > /home/dbadmin/.ssh/id_rsa.key
+nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbadmin/.ssh/id_rsa.pub
+
+# Fix permissions
+chown -R dbadmin:verticadba /home/dbadmin/.ssh
+chmod 600 /home/dbadmin/.ssh/*
+
+# Install our private RPMs
+RPM_BUCKET=$(aws s3 ls | grep $(nubis-metadata NUBIS_PROJECT)-$(nubis-metadata NUBIS_ENVIRONMENT)-rpms | awk '{print $3}' | head -n1)
+
+if [ "$RPM_BUCKET" != "" ]; then
+  aws s3 sync s3://$RPM_BUCKET/ /tmp/rpms/
+  
+  echo "Installing private RPMS"
+  
+  yum localinstall -y /tmp/rpms/*.rpm
+fi
+
+
+

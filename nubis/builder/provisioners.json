@@ -1,16 +1,23 @@
 {
   "provisioners": [
     {
+      "type": "shell",
+      "inline": [
+        "sudo groupadd verticadba",
+        "sudo useradd dbadmin -g verticadba"
+      ],
+      "order": "3"
+    },
+    {
       "type": "file",
-      "source": "vertica-8.1.1-9.x86_64.RHEL6.rpm",
-      "destination": "/tmp/vertica-8.1.1-9.x86_64.RHEL6.rpm",
-      "order": "2"
+      "source": "./aws-autoscaling-vertica",
+      "destination": "/tmp",
+      "order": "3"
     },
     {
       "type": "shell",
       "inline": [
-        "sudo yum -y localinstall /tmp/vertica-8.1.1-9.x86_64.RHEL6.rpm",
-	"sudo rm /tmp/vertica-8.1.1-9.x86_64.RHEL6.rpm"
+        "sudo mv /tmp/aws-autoscaling-vertica /home/dbadmin/autoscale"
       ],
       "order": "3"
     }

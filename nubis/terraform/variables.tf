@@ -10,8 +10,12 @@ variable "environment" {
   default = "stage"
 }
 
+variable "arena" {
+  default = "core"
+}
+
 variable "service_name" {
-  default = "vertica"
+  default = "vertical"
 }
 
 variable "ami" {}
