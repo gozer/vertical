@@ -1,0 +1,6 @@
+#!/bin/bash -l
+
+if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+    echo "Enabling Huge Pages"
+    echo always > /sys/kernel/mm/transparent_hugepage/enabled
+fi
