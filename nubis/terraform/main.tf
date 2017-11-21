@@ -7,4 +7,5 @@ module "worker" {
   purpose                   = "database"
   ami                       = "${var.ami}"
   instance_type             = "m4.4xlarge"
+  root_storage_size         = "128"
 }
