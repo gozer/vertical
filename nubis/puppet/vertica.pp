@@ -40,3 +40,11 @@ file { "/etc/nubis.d/$project_name":
   mode   => '0755',
   source => 'puppet:///nubis/files/startup',
 }
+
+include nubis_discovery
+
+# Switch to MC port once working
+nubis::discovery::service { $project_name:
+  tcp      => '5444',
+}
+
