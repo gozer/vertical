@@ -29,7 +29,7 @@ module "load_balancer" {
 
   backend_protocol = "https"
 
-  health_check_target = "HTTPS:5450/webui/login"
+  health_check_target = "TCP:5450"
 }
 
 module "dns" {
