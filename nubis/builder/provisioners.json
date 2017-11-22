@@ -3,7 +3,7 @@
     {
       "type": "shell",
       "inline": [
-        "sudo groupadd verticadba",
+        "sudo groupadd -r verticadba",
         "sudo useradd -m -r dbadmin -g verticadba"
       ],
       "order": "3"
@@ -19,7 +19,7 @@
       "inline": [
         "sudo mv /tmp/aws-autoscaling-vertica /home/dbadmin/autoscale",
         "sudo chown -R dbadmin:verticadba /home/dbadmin/autoscale",
-        "sudo chmod 755 /home/dbadmin/autoscale/*.sh",
+        "sudo find /home/dbadmin/autoscale -type f -name '*.sh' -print0 | sudo xargs -0 chmod 755",
         "sudo chmod 6775 /home/dbadmin/autoscale/{add,remove}_nodes.sh"
       ],
       "order": "3"
