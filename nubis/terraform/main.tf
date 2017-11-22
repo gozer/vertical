@@ -9,6 +9,7 @@ module "worker" {
   elb          = "${module.load_balancer.name}"
 
   health_check_type = "EC2"
+  wait_for_capacity_timeout = "20m"
 
   instance_type     = "m4.4xlarge"
   root_storage_size = "128"
