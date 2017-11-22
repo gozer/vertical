@@ -7,10 +7,9 @@ module "worker" {
   purpose      = "database"
   ami          = "${var.ami}"
   elb          = "${module.load_balancer.name}"
-  
+
   health_check_type = "EC2"
-  
-  
+
   instance_type     = "m4.4xlarge"
   root_storage_size = "128"
 
@@ -27,9 +26,9 @@ module "load_balancer" {
 
   backend_port_http  = "5450"
   backend_port_https = "5450"
-  
+
   backend_protocol = "https"
-  
+
   health_check_target = "HTTPS:5450/webui/login"
 }
 
@@ -64,26 +63,26 @@ module "info" {
 }
 
 resource "tls_private_key" "vertical" {
-  algorithm   = "RSA"
+  algorithm = "RSA"
 }
 
 # This null resource is responsible for publishing platform secrets to KMS
 resource "null_resource" "ssh" {
   # Important to list here every variable that affects what needs to be put into KMS
   triggers {
-    region    = "${var.region}"
-    arena     = "${var.arena}"
+    region       = "${var.region}"
+    arena        = "${var.arena}"
     service_name = "${var.service_name}"
-    context   = "-E region:${var.region} -E arena:${var.arena} -E service:${var.service_name}"
-    unicreds  = "unicreds -r ${var.region} put  vertical/${var.arena}/${var.environment}"
-    unicreds_rm = "unicreds -r ${var.region} delete  vertical/${var.arena}/${var.environment}"
+    context      = "-E region:${var.region} -E arena:${var.arena} -E service:${var.service_name}"
+    unicreds     = "unicreds -r ${var.region} put  vertical/${var.arena}/${var.environment}"
+    unicreds_rm  = "unicreds -r ${var.region} delete  vertical/${var.arena}/${var.environment}"
   }
 
   # Consul Internal UI SSL Certificate
   provisioner "local-exec" {
     command = "${self.triggers.unicreds}/ssh/public-key ${self.triggers.context} -- \"${tls_private_key.vertical.public_key_openssh}\""
   }
-  
+
   provisioner "local-exec" {
     command = "${self.triggers.unicreds}/ssh/secret-key ${self.triggers.context} -- \"${tls_private_key.vertical.private_key_pem}\""
   }
@@ -92,8 +91,8 @@ resource "null_resource" "ssh" {
     when    = "destroy"
     command = "${self.triggers.unicreds_rm}/ssh/public-key"
   }
-  
-   provisioner "local-exec" {
+
+  provisioner "local-exec" {
     when    = "destroy"
     command = "${self.triggers.unicreds_rm}/ssh/secret-key"
   }
@@ -101,16 +100,15 @@ resource "null_resource" "ssh" {
 
 # And a special role to be able to talk to AWS a little
 resource "aws_iam_role_policy" "vertical" {
-    name = "vertical-${var.region}-${var.arena}-${var.environment}"
-    role = "${module.worker.role}"
-    policy = "${data.aws_iam_policy_document.vertical.json}"
+  name   = "vertical-${var.region}-${var.arena}-${var.environment}"
+  role   = "${module.worker.role}"
+  policy = "${data.aws_iam_policy_document.vertical.json}"
 }
 
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "vertical" {
   statement {
-
     actions = [
       "ec2:DescribeInstances",
       "ec2:DescribeAddresses",
@@ -120,9 +118,8 @@ data "aws_iam_policy_document" "vertical" {
       "*",
     ]
   }
-  
-  statement {
 
+  statement {
     actions = [
       "dynamodb:GetItem",
       "dynamodb:Query",
@@ -132,7 +129,7 @@ data "aws_iam_policy_document" "vertical" {
     resources = [
       "arn:aws:dynamodb:${var.region}:${data.aws_caller_identity.current.account_id}:table/credential-store",
     ]
-  }  
+  }
 }
 
 # And a custom vertica security group from the world
