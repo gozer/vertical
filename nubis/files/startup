@@ -45,7 +45,18 @@ if [ "$RPM_BUCKET" != "" ]; then
   yum localinstall -y /tmp/rpms/*.rpm
 fi
 
+# Bootstrap content of variables (XXX: Dynamic password)
+cat <<EOF > /home/dbadmin/autoscale/autoscaling_vars.sh
+database_name="nubis"
+password="nubis"
+EOF
+
 #XXX: Only bootstrap once
 cd /home/dbadmin/autoscale && bash -x cluster_init.sh
+su - dbadmin -c 'cd /home/dbadmin/autoscale && bash -x database_init.sh'
 
+
+# Stick in Consul ?
+API_KEY=$(cat /opt/vertica/config/apikeys.dat | jq -r .[].apikey)
+echo "API Key: $API_KEY"
 
