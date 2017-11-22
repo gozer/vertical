@@ -113,6 +113,7 @@ data "aws_iam_policy_document" "vertical" {
     actions = [
       "ec2:DescribeInstances",
       "ec2:DescribeAddresses",
+      "autoscaling:DescribeAutoScalingInstances",
     ]
 
     resources = [
