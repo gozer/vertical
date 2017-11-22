@@ -41,10 +41,18 @@ file { "/etc/nubis.d/$project_name":
   source => 'puppet:///nubis/files/startup',
 }
 
+file { "/usr/local/bin/vertical-bootstrap":
+  ensure => file,
+  owner  => root,
+  group  => root,
+  mode   => '0755',
+  source => 'puppet:///nubis/files/bootstrap',
+}
+
 include nubis_discovery
 
 # Switch to MC port once working
 nubis::discovery::service { $project_name:
-  tcp      => '5444',
+  tcp      => 'localhost:5444',
 }
 

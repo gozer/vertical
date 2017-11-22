@@ -51,10 +51,8 @@ database_name="nubis"
 password="nubis"
 EOF
 
-#XXX: Only bootstrap once
-cd /home/dbadmin/autoscale && bash -x cluster_init.sh
-su - dbadmin -c 'cd /home/dbadmin/autoscale && bash -x database_init.sh'
-
+#Only bootstrap once and only once
+/usr/local/bin/vertical-bootstrap
 
 # Stick in Consul ?
 API_KEY=$(cat /opt/vertica/config/apikeys.dat | jq -r .[].apikey)
