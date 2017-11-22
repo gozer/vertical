@@ -28,7 +28,9 @@ module "load_balancer" {
   backend_port_http  = "5450"
   backend_port_https = "5450"
   
-  health_check_target = "TCP:22"
+  backend_protocol = "https"
+  
+  health_check_target = "HTTPS:5450/webui/login"
 }
 
 module "dns" {
