@@ -45,5 +45,7 @@ if [ "$RPM_BUCKET" != "" ]; then
   yum localinstall -y /tmp/rpms/*.rpm
 fi
 
+#XXX: Only bootstrap once
+cd /home/dbadmin/autoscale && bash -x cluster_init.sh
 
 

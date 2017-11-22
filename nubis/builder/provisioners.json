@@ -4,7 +4,7 @@
       "type": "shell",
       "inline": [
         "sudo groupadd verticadba",
-        "sudo useradd dbadmin -g verticadba"
+        "sudo useradd -m -r dbadmin -g verticadba"
       ],
       "order": "3"
     },
