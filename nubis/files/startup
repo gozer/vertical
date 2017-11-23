@@ -67,7 +67,7 @@ fi
 /usr/local/bin/vertical-bootstrap
 
 # If we haven't perfomed the boostrap process, we are a slave, so join
-if [ ! -f /var/run/bootstrapped ]; then
+if [ ! -f "/var/run/$(nubis-metadata NUBIS_PROJECT)-bootstrapped" ]; then
   # This will make us join the cluster, possibly waiting for the master to finish bootstrapping
   /home/dbadmin/autoscale/launch.sh.template
 fi
