@@ -16,7 +16,7 @@ if [ "$CONSUL_LOCK_HELD" == "true" ]; then
     consulate kv set $KV_PREFIX/bootstrap "in-progress"
     echo "Performing initial bootstrap"
 
-    if ! cd /home/dbadmin/autoscale && bash -x cluster_init.sh; then
+    if ! ( cd /home/dbadmin/autoscale && bash -x cluster_init.sh ); then
       echo "cluster_init failed"
       exit
     fi
