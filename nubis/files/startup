@@ -25,6 +25,8 @@ export PATH
 
 database_name="nubis"
 password="nubis"
+# For autoscaling between 1 and 3 nodes, set k_safety to 0 (not recommended!)
+k_safety=0                                             
 EOF
 
 echo "Managing SSH key"
@@ -64,3 +66,8 @@ fi
 #Only bootstrap once and only once
 /usr/local/bin/vertical-bootstrap
 
+# If we haven't perfomed the boostrap process, we are a slave, so join
+if [ ! -f /var/run/bootstrapped ]; then
+  # This will make us join the cluster, possibly waiting for the master to finish bootstrapping
+  /home/dbadmin/autoscale/launch.sh.template
+fi
