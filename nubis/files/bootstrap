@@ -11,13 +11,13 @@ BOOTSTRAP_DONE_MARKER=$(/usr/local/bin/consul kv get "$KV_PREFIX/bootstrap-marke
 
 if [ "$CONSUL_LOCK_HELD" != "true" ]; then
   # Re-exec ourselves under lock
-  exec consul lock "$KV_PREFIX/bootstrap" $0
+  exec consul lock "$KV_PREFIX/bootstrap" "$0"
 fi
 
-BOOTSTRAP=$(consulate kv get $KV_PREFIX/bootstrap)
+BOOTSTRAP=$(consulate kv get "$KV_PREFIX/bootstrap")
 
 if [ "$BOOTSTRAP" != "$BOOTSTRAP_DONE_MARKER" ]; then
-  consulate kv set $KV_PREFIX/bootstrap "in-progress"
+  consulate kv set "$KV_PREFIX/bootstrap" "in-progress"
   echo "Performing initial bootstrap"
 
   if ! ( cd /home/dbadmin/autoscale && bash -x cluster_init.sh ); then
@@ -36,7 +36,7 @@ if [ "$BOOTSTRAP" != "$BOOTSTRAP_DONE_MARKER" ]; then
   consulate kv set "$KV_PREFIX/api-key" "$API_KEY"
 
   # And we are done
-  consulate kv set $KV_PREFIX/bootstrap "$BOOTSTRAP_DONE_MARKER"
+  consulate kv set "$KV_PREFIX/bootstrap" "$BOOTSTRAP_DONE_MARKER"
   
   echo "$BOOTSTRAP_DONE_MARKER" > "/var/run/$(nubis-metadata NUBIS_PROJECT)-bootstrapped"
 fi
