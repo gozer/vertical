@@ -34,17 +34,21 @@ chmod 700 /home/dbadmin/.ssh
 
 # For automation
 nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/secret-key > /home/dbadmin/autoscale/key.pem
-nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/secret-key > /home/dbadmin/.ssh/id_rsa.key
+nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/secret-key > /home/dbadmin/.ssh/id_rsa
 
 nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbadmin/.ssh/id_rsa.pub
 nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbadmin/.ssh/authorized_keys
 nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbadmin/autoscale/srcClusterKey.pub
 
-# Fix permissions
+# Fix ownership
 chown -R dbadmin:verticadba /home/dbadmin
 
+# Fix permissions
 chmod 600 /home/dbadmin/autoscale/key.pem
 chmod 600 /home/dbadmin/.ssh/*
+
+chmod 755 /home/dbadmin/autoscale/*.sh*
+chmod 6775 /home/dbadmin/autoscale/{add,remove}_nodes.sh
 
 # Install our private RPMs
 RPM_BUCKET=$(aws s3 ls | grep $(nubis-metadata NUBIS_PROJECT)-$(nubis-metadata NUBIS_ENVIRONMENT)-rpms | awk '{print $3}' | head -n1)
