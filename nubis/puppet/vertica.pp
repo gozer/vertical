@@ -23,6 +23,10 @@ package { 'dialog':
   ensure => 'latest',
 }
 
+package { 'moreutils':
+  ensure => 'latest',
+}
+
 python::pip { 'awscli':
   ensure  => 'latest',
 }
@@ -55,4 +59,13 @@ include nubis_discovery
 nubis::discovery::service { $project_name:
   tcp      => 'localhost:5450',
 }
+
+file { "/etc/sudoers.d/${project_name}":
+  ensure  => file,
+  owner   => 'root',
+  group   => 'root',
+  mode    => '0644',
+  content => 'dbadmin ALL=(ALL) NOPASSWD:ALL',
+}
+
 
