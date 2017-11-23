@@ -57,7 +57,3 @@ EOF
 #Only bootstrap once and only once
 /usr/local/bin/vertical-bootstrap
 
-# Stick in Consul ?
-API_KEY=$(cat /opt/vertica/config/apikeys.dat | jq -r .[].apikey)
-echo "API Key: $API_KEY"
-

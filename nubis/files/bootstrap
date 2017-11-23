@@ -9,25 +9,34 @@ KV_PREFIX="$NUBIS_PROJECT-$NUBIS_ENVIRONMENT/$NUBIS_ENVIRONMENT/config"
 
 BOOTSTRAP_DONE_MARKER=$(/usr/local/bin/consul kv get "$KV_PREFIX/bootstrap-marker" || echo "done")
 
-if [ "$CONSUL_LOCK_HELD" == "true" ]; then
-  BOOTSTRAP=$(consulate kv get $KV_PREFIX/bootstrap)
-
-  if [ "$BOOTSTRAP" != "$BOOTSTRAP_DONE_MARKER" ]; then
-    consulate kv set $KV_PREFIX/bootstrap "in-progress"
-    echo "Performing initial bootstrap"
-
-    if ! ( cd /home/dbadmin/autoscale && bash -x cluster_init.sh ); then
-      echo "cluster_init failed"
-      exit
-    fi
-    
-    if ! su - dbadmin -c 'cd /home/dbadmin/autoscale && bash -x database_init.sh'; then
-      echo "database_init failed"
-    fi
-
-    consulate kv set $KV_PREFIX/bootstrap "$BOOTSTRAP_DONE_MARKER"
-  fi
-else
+if [ "$CONSUL_LOCK_HELD" != "true" ]; then
   # Re-exec ourselves under lock
-  consul lock "$KV_PREFIX/bootstrap" $0
+  exec consul lock "$KV_PREFIX/bootstrap" $0
 fi
+
+BOOTSTRAP=$(consulate kv get $KV_PREFIX/bootstrap)
+
+if [ "$BOOTSTRAP" != "$BOOTSTRAP_DONE_MARKER" ]; then
+  consulate kv set $KV_PREFIX/bootstrap "in-progress"
+  echo "Performing initial bootstrap"
+
+  if ! ( cd /home/dbadmin/autoscale && bash -x cluster_init.sh ); then
+    echo "cluster_init failed"
+    exit
+  fi
+    
+  if ! su - dbadmin -c 'cd /home/dbadmin/autoscale && bash -x database_init.sh'; then
+    echo "database_init failed"
+  fi
+  
+  # Stick in Consul ?
+  API_KEY=$(cat /opt/vertica/config/apikeys.dat | jq -r .[].apikey)
+  echo "API Key: $API_KEY"
+  
+  consulate kv set "$KV_PREFIX/api-key" "$API_KEY"
+
+  # And we are done
+  consulate kv set $KV_PREFIX/bootstrap "$BOOTSTRAP_DONE_MARKER"
+fi
+
+
