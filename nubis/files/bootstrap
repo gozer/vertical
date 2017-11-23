@@ -37,6 +37,6 @@ if [ "$BOOTSTRAP" != "$BOOTSTRAP_DONE_MARKER" ]; then
 
   # And we are done
   consulate kv set $KV_PREFIX/bootstrap "$BOOTSTRAP_DONE_MARKER"
+  
+  echo "$BOOTSTRAP_DONE_MARKER" > /var/run/bootstrapped
 fi
-
-
