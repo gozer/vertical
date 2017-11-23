@@ -18,6 +18,15 @@ chmod 600 $SWAP_FILE
 mkswap $SWAP_FILE
 swapon $SWAP_FILE
 
+# Bootstrap content of variables (XXX: Dynamic password)
+cat <<EOF > /home/dbadmin/autoscale/autoscaling_vars.sh
+PATH="\$PATH:/opt/vertica/bin"
+export PATH
+
+database_name="nubis"
+password="nubis"
+EOF
+
 echo "Managing SSH key"
 
 mkdir -p /home/dbadmin/.ssh
@@ -25,13 +34,16 @@ chmod 700 /home/dbadmin/.ssh
 
 # For automation
 nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/secret-key > /home/dbadmin/autoscale/key.pem
-chmod 600 /home/dbadmin/autoscale/key.pem
-
 nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/secret-key > /home/dbadmin/.ssh/id_rsa.key
+
 nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbadmin/.ssh/id_rsa.pub
+nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbadmin/.ssh/authorized_keys
+nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbadmin/autoscale/srcClusterKey.pub
 
 # Fix permissions
-chown -R dbadmin:verticadba /home/dbadmin/.ssh
+chown -R dbadmin:verticadba /home/dbadmin
+
+chmod 600 /home/dbadmin/autoscale/key.pem
 chmod 600 /home/dbadmin/.ssh/*
 
 # Install our private RPMs
@@ -44,15 +56,6 @@ if [ "$RPM_BUCKET" != "" ]; then
   
   yum localinstall -y /tmp/rpms/*.rpm
 fi
-
-# Bootstrap content of variables (XXX: Dynamic password)
-cat <<EOF > /home/dbadmin/autoscale/autoscaling_vars.sh
-PATH="\$PATH:/opt/vertica/bin"
-export PATH
-
-database_name="nubis"
-password="nubis"
-EOF
 
 #Only bootstrap once and only once
 /usr/local/bin/vertical-bootstrap
