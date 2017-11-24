@@ -67,14 +67,6 @@ if [ "$RPM_BUCKET" != "" ]; then
   yum localinstall -y /tmp/rpms/*.rpm
 fi
 
-# Seed config file with SSH options?
-cat <<EOF> /opt/vertica/config/admintools.conf
-[SSHConfig]
-ssh_options = -oConnectTimeout=30 -o TCPKeepAlive=no -o ServerAliveInterval=15 -o ServerAliveCountMax=2 -o StrictHostKeyChecking=no -o BatchMode=no
-EOF
-
-chown dbadmin:verticadba /opt/vertica/config/admintools.conf
-
 #Only bootstrap once and only once
 /usr/local/bin/vertical-bootstrap
 
