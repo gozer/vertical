@@ -72,7 +72,7 @@ fi
 
 # Fix SSH batchmode option
 cat /opt/vertica/config/admintools.conf
-perl -pi -e's/BatchMode=no/BatchMode=yes/g' /opt/vertica/config/admintools.conf
+perl -pi -e's/BatchMode=yes/BatchMode=no/g' /opt/vertica/config/admintools.conf
 cat /opt/vertica/config/admintools.conf
 
 # If we haven't perfomed the boostrap process, we are a slave, so join
@@ -83,7 +83,7 @@ fi
 
 # Fix SSH batchmode option, again
 cat /opt/vertica/config/admintools.conf
-perl -pi -e's/BatchMode=no/BatchMode=yes/g' /opt/vertica/config/admintools.conf
+perl -pi -e's/BatchMode=yes/BatchMode=no/g' /opt/vertica/config/admintools.conf
 cat /opt/vertica/config/admintools.conf
 
 # Stop the MC console on all but one node somehow
