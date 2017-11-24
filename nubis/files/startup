@@ -63,6 +63,11 @@ if [ "$RPM_BUCKET" != "" ]; then
   yum localinstall -y /tmp/rpms/*.rpm
 fi
 
+# Fix SSH batchmode option
+cat /opt/vertica/config/admintools.conf
+perl -pi -e's/BatchMode=no/BatchMode=yes/g' /opt/vertica/config/admintools.conf
+cat /opt/vertica/config/admintools.conf
+
 #Only bootstrap once and only once
 /usr/local/bin/vertical-bootstrap
 
