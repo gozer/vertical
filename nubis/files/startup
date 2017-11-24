@@ -1,6 +1,6 @@
 #!/bin/bash -l
 
-exec &> >(tee /var/log/startup.log) 2>&1
+exec &> >(tee >( ts > /var/log/startup.log)) 2>&1
 
 if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
     echo "Enable Transparent Hugepages"
@@ -76,3 +76,5 @@ if [ ! -f "/var/run/$(nubis-metadata NUBIS_PROJECT)-bootstrapped" ]; then
   # This will make us join the cluster, possibly waiting for the master to finish bootstrapping
   /home/dbadmin/autoscale/launch.sh.template
 fi
+
+# Stop the MC console on all but one node somehow
