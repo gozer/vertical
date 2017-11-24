@@ -63,18 +63,31 @@ if [ "$RPM_BUCKET" != "" ]; then
   yum localinstall -y /tmp/rpms/*.rpm
 fi
 
+# Seed config file with SSH options?
+cat <<EOF> /opt/vertica/config/admintools.conf
+[SSHConfig]
+ssh_options = -oConnectTimeout=30 -o TCPKeepAlive=no -o ServerAliveInterval=15 -o ServerAliveCountMax=2 -o StrictHostKeyChecking=no -o BatchMode=no
+EOF
+
+chown dbadmin:verticadba /opt/vertica/config/admintools.conf
+
+#Only bootstrap once and only once
+/usr/local/bin/vertical-bootstrap
+
 # Fix SSH batchmode option
 cat /opt/vertica/config/admintools.conf
 perl -pi -e's/BatchMode=no/BatchMode=yes/g' /opt/vertica/config/admintools.conf
 cat /opt/vertica/config/admintools.conf
-
-#Only bootstrap once and only once
-/usr/local/bin/vertical-bootstrap
 
 # If we haven't perfomed the boostrap process, we are a slave, so join
 if [ ! -f "/var/run/$(nubis-metadata NUBIS_PROJECT)-bootstrapped" ]; then
   # This will make us join the cluster, possibly waiting for the master to finish bootstrapping
   /home/dbadmin/autoscale/launch.sh.template
 fi
+
+# Fix SSH batchmode option, again
+cat /opt/vertica/config/admintools.conf
+perl -pi -e's/BatchMode=no/BatchMode=yes/g' /opt/vertica/config/admintools.conf
+cat /opt/vertica/config/admintools.conf
 
 # Stop the MC console on all but one node somehow
