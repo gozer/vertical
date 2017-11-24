@@ -45,6 +45,10 @@ nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbad
 # Fix ownership
 chown -R dbadmin:verticadba /home/dbadmin
 
+# Disable DUO for this user, yuck
+echo 'groups = *,!verticadba' >> /etc/confd/templates/duo.tmpl
+systemctl reload confd
+
 # Fix permissions
 chmod 600 /home/dbadmin/autoscale/key.pem
 chmod 600 /home/dbadmin/.ssh/*
