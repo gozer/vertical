@@ -32,7 +32,7 @@ module "load_balancer" {
 
   backend_protocol = "https"
 
-  health_check_target = "TCP:5450"
+  health_check_target = "TCP:5433"
 }
 
 module "dns" {
@@ -152,9 +152,20 @@ resource "aws_security_group" "vertical" {
   }
 
   # HP Vertica client (vsql, ODBC, JDBC, etc) port.
-  # Intra-cluster communication
   ingress {
     from_port = 5433
+    to_port   = 5433
+    protocol  = "tcp"
+    self      = true
+
+    security_groups = [
+      "${module.load_balancer.source_security_group_id}",
+    ]
+  }
+
+  # Intra-cluster communication
+  ingress {
+    from_port = 5434
     to_port   = 5434
     protocol  = "tcp"
     self      = true
