@@ -47,7 +47,7 @@ chown -R dbadmin:verticadba /home/dbadmin
 
 # Disable DUO for this user, yuck
 echo 'groups = *,!verticadba' >> /etc/confd/templates/duo.tmpl
-systemctl reload confd
+systemctl restart confd
 
 # Fix permissions
 chmod 600 /home/dbadmin/autoscale/key.pem
