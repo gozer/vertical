@@ -6,7 +6,7 @@ module "worker" {
   service_name = "${var.service_name}"
   purpose      = "database"
   ami          = "${var.ami}"
-  elb          = "${module.load_balancer.name}"
+  elb          = "${module.load_balancer_vsql.name},${module.load_balancer_console.name},"
 
   min_instances = 3
 
@@ -21,28 +21,57 @@ module "worker" {
   security_group_custom = true
 }
 
-module "load_balancer" {
+# This one is for vsql
+module "load_balancer_vsql" {
   source       = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.0.1"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
   service_name = "${var.service_name}"
 
-  backend_port_http  = "5450"
-  backend_port_https = "5450"
+  backend_port_http  = "5433"
+  backend_port_https = "5433"
 
   backend_protocol = "https"
+  internal = true
 
   health_check_target = "TCP:5433"
 }
 
-module "dns" {
+module "load_balancer_console" {
+  source       = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.0.1"
+  region       = "${var.region}"
+  environment  = "${var.environment}"
+  account      = "${var.account}"
+  service_name = "${var.service_name}-console"
+
+  # We are a unusual Load Balancer with raw connectivity
+  no_ssl_cert        = "1"
+  backend_protocol   = "tcp"
+  protocol_http      = "tcp"
+  protocol_https     = "tcp"
+  backend_port_http  = "5433"
+  backend_port_https = "5433"
+
+  health_check_target = "TCP:5433"
+}
+
+module "dns_vsql" {
   source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.0.1"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
-  service_name = "${var.service_name}"
-  target       = "${module.load_balancer.address}"
+  service_name = "${var.service_name}-vsql"
+  target       = "${module.load_balancer_vsql.address}"
+}
+
+module "dns_console" {
+  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.0.1"
+  region       = "${var.region}"
+  environment  = "${var.environment}"
+  account      = "${var.account}"
+  service_name = "${var.service_name}-console"
+  target       = "${module.load_balancer_console.address}"
 }
 
 module "rpms" {
@@ -116,7 +145,7 @@ resource "aws_security_group" "vertical" {
     self      = true
 
     security_groups = [
-      "${module.load_balancer.source_security_group_id}",
+      "${module.load_balancer_vsql.source_security_group_id}",
     ]
   }
 
@@ -152,7 +181,7 @@ resource "aws_security_group" "vertical" {
     self      = true
 
     security_groups = [
-      "${module.load_balancer.source_security_group_id}",
+      "${module.load_balancer_console.source_security_group_id}",
     ]
   }
 
@@ -188,7 +217,6 @@ resource "aws_security_group" "vertical" {
 
     security_groups = [
       "${module.info.ssh_security_group}",
-      "${module.load_balancer.source_security_group_id}",
     ]
   }
 
