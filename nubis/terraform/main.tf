@@ -27,7 +27,7 @@ module "load_balancer_vsql" {
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
-  service_name = "${var.service_name}"
+  service_name = "${var.service_name}-vsql"
 
   backend_port_http  = "5433"
   backend_port_https = "5433"
@@ -50,10 +50,10 @@ module "load_balancer_console" {
   backend_protocol   = "tcp"
   protocol_http      = "tcp"
   protocol_https     = "tcp"
-  backend_port_http  = "5433"
-  backend_port_https = "5433"
+  backend_port_http  = "5450"
+  backend_port_https = "5450"
 
-  health_check_target = "TCP:5433"
+  health_check_target = "TCP:5450"
 }
 
 module "dns_vsql" {
