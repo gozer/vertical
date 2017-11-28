@@ -8,7 +8,7 @@ module "worker" {
   ami          = "${var.ami}"
   elb          = "${module.load_balancer.name}"
 
-  min_instances = 2
+  min_instances = 3
 
   health_check_type = "EC2"
   wait_for_capacity_timeout = "20m"
