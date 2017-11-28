@@ -31,16 +31,23 @@ EOF
 
 echo "Managing SSH key"
 
+NUBIS_ENVIRONMENT=$(nubis-metadata NUBIS_ENVIRONMENT)
+NUBIS_PROJECT=$(nubis-metadata NUBIS_PROJECT)
+KV_PREFIX="$NUBIS_PROJECT-$NUBIS_ENVIRONMENT/$NUBIS_ENVIRONMENT/config"
+
 mkdir -p /home/dbadmin/.ssh
 chmod 700 /home/dbadmin/.ssh
 
-# For automation
-nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/secret-key > /home/dbadmin/autoscale/key.pem
-nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/secret-key > /home/dbadmin/.ssh/id_rsa
 
-nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbadmin/.ssh/id_rsa.pub
-nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbadmin/.ssh/authorized_keys
-nubis-secret get $(nubis-metadata NUBIS_ENVIRONMENT)/ssh/public-key > /home/dbadmin/autoscale/srcClusterKey.pub
+
+# For automation
+
+consulate kv get "$KV_PREFIX/ssh/secret-key" > /home/dbadmin/autoscale/key.pem
+consulate kv get "$KV_PREFIX/ssh/secret-key" > /home/dbadmin/.ssh/id_rsa
+
+consulate kv get "$KV_PREFIX/ssh/public-key" > /home/dbadmin/.ssh/id_rsa.pub
+consulate kv get "$KV_PREFIX/ssh/public-key" > /home/dbadmin/.ssh/authorized_keys
+consulate kv get "$KV_PREFIX/ssh/public-key" > /home/dbadmin/autoscale/srcClusterKey.pub
 
 # Fix ownership
 chown -R dbadmin:verticadba /home/dbadmin

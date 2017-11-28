@@ -45,7 +45,7 @@ module "dns" {
   target       = "${module.load_balancer.address}"
 }
 
-module "clips" {
+module "rpms" {
   source       = "github.com/nubisproject/nubis-terraform//bucket?ref=v2.0.1"
   region       = "${var.region}"
   environment  = "${var.environment}"
@@ -70,38 +70,6 @@ resource "tls_private_key" "vertical" {
   algorithm = "RSA"
 }
 
-# This null resource is responsible for publishing platform secrets to KMS
-resource "null_resource" "ssh" {
-  # Important to list here every variable that affects what needs to be put into KMS
-  triggers {
-    region       = "${var.region}"
-    arena        = "${var.arena}"
-    service_name = "${var.service_name}"
-    context      = "-E region:${var.region} -E arena:${var.arena} -E service:${var.service_name}"
-    unicreds     = "unicreds -r ${var.region} put  vertical/${var.arena}/${var.environment}"
-    unicreds_rm  = "unicreds -r ${var.region} delete  vertical/${var.arena}/${var.environment}"
-  }
-
-  # Consul Internal UI SSL Certificate
-  provisioner "local-exec" {
-    command = "${self.triggers.unicreds}/ssh/public-key ${self.triggers.context} -- \"${tls_private_key.vertical.public_key_openssh}\""
-  }
-
-  provisioner "local-exec" {
-    command = "${self.triggers.unicreds}/ssh/secret-key ${self.triggers.context} -- \"${tls_private_key.vertical.private_key_pem}\""
-  }
-
-  provisioner "local-exec" {
-    when    = "destroy"
-    command = "${self.triggers.unicreds_rm}/ssh/public-key"
-  }
-
-  provisioner "local-exec" {
-    when    = "destroy"
-    command = "${self.triggers.unicreds_rm}/ssh/secret-key"
-  }
-}
-
 # And a special role to be able to talk to AWS a little
 resource "aws_iam_role_policy" "vertical" {
   name   = "vertical-${var.region}-${var.arena}-${var.environment}"
@@ -121,18 +89,6 @@ data "aws_iam_policy_document" "vertical" {
 
     resources = [
       "*",
-    ]
-  }
-
-  statement {
-    actions = [
-      "dynamodb:GetItem",
-      "dynamodb:Query",
-      "dynamodb:Scan",
-    ]
-
-    resources = [
-      "arn:aws:dynamodb:${var.region}:${data.aws_caller_identity.current.account_id}:table/credential-store",
     ]
   }
 }
