@@ -33,11 +33,11 @@ python::pip { 'awscli':
 
 # System tuning
 
-sysctl { 'vm.swappiness': 
-  value => '1' 
+sysctl { 'vm.swappiness':
+  value => '1'
 }
 
-file { "/etc/nubis.d/$project_name":
+file { "/etc/nubis.d/${project_name}":
   ensure => file,
   owner  => root,
   group  => root,
@@ -45,7 +45,7 @@ file { "/etc/nubis.d/$project_name":
   source => 'puppet:///nubis/files/startup',
 }
 
-file { "/usr/local/bin/vertical-bootstrap":
+file { '/usr/local/bin/vertical-bootstrap':
   ensure => file,
   owner  => root,
   group  => root,
