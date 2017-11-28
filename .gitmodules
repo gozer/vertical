@@ -1,0 +1,4 @@
+[submodule "aws-autoscaling-vertica"]
+	path = aws-autoscaling-vertica
+	url = https://github.com/gozer/aws-autoscaling-vertica.git
+	branch = nubis
