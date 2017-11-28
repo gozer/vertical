@@ -2,6 +2,8 @@
 
 exec &> >(tee >( ts > /var/log/startup.log)) 2>&1
 
+export PATH=/usr/local/bin:$PATH
+
 if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
     echo "Enable Transparent Hugepages"
     echo always > /sys/kernel/mm/transparent_hugepage/enabled
