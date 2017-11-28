@@ -11,7 +11,8 @@ module "worker" {
   min_instances = 3
 
   health_check_type = "EC2"
-  wait_for_capacity_timeout = "20m"
+  wait_for_capacity_timeout = "30m"
+  health_check_grace_period = "1200"
 
   instance_type     = "m4.4xlarge"
   root_storage_size = "128"
