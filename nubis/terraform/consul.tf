@@ -28,5 +28,3 @@ resource "consul_keys" "config" {
     delete = true
   }
 }
-
-

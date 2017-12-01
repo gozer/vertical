@@ -80,9 +80,7 @@ fi
 /usr/local/bin/vertical-bootstrap
 
 # Fix SSH batchmode option
-cat /opt/vertica/config/admintools.conf
 perl -pi -e's/BatchMode=yes/BatchMode=no/g' /opt/vertica/config/admintools.conf
-cat /opt/vertica/config/admintools.conf
 
 # If we haven't perfomed the boostrap process, we are a slave, so join
 if [ ! -f "/var/run/$(nubis-metadata NUBIS_PROJECT)-bootstrapped" ]; then
@@ -91,8 +89,4 @@ if [ ! -f "/var/run/$(nubis-metadata NUBIS_PROJECT)-bootstrapped" ]; then
 fi
 
 # Fix SSH batchmode option, again
-cat /opt/vertica/config/admintools.conf
 perl -pi -e's/BatchMode=yes/BatchMode=no/g' /opt/vertica/config/admintools.conf
-cat /opt/vertica/config/admintools.conf
-
-# Stop the MC console on all but one node somehow

@@ -1,5 +1,5 @@
 module "worker" {
-  source       = "github.com/gozer/nubis-terraform//worker?ref=issue%2F55%2Fdont-wait"
+  source       = "github.com/nubisproject/nubis-terraform//worker?ref=develop"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -10,7 +10,7 @@ module "worker" {
 
   min_instances = 3
 
-  health_check_type = "EC2"
+  health_check_type         = "EC2"
   wait_for_capacity_timeout = "30m"
   health_check_grace_period = "1200"
 
@@ -33,7 +33,7 @@ module "load_balancer_vsql" {
   backend_port_https = "5433"
 
   backend_protocol = "https"
-  internal = true
+  internal         = true
 
   health_check_target = "TCP:5433"
 }
