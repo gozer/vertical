@@ -57,7 +57,7 @@ include nubis_discovery
 
 # Switch to MC port once working
 nubis::discovery::service { $project_name:
-  tcp      => '5450',
+  tcp      => '5434',
 }
 
 file { "/etc/sudoers.d/${project_name}":
