@@ -40,3 +40,4 @@ if [ "$BOOTSTRAP" != "$BOOTSTRAP_DONE_MARKER" ]; then
   
   echo "$BOOTSTRAP_DONE_MARKER" > "/var/run/$(nubis-metadata NUBIS_PROJECT)-bootstrapped"
 fi
+
