@@ -5,8 +5,8 @@
     ],
     "project_description": "Vertica Cluster",
     "project_name": "vertical",
-    "source_ami_project_version": "v2.1.0-rc1",
+    "source_ami_project_version": "v2.1.0",
     "ami_regions" : "",
-    "project_version": "v2.1.0_rc1_{{env `GIT_COMMIT_SHA`}}"
+    "project_version": "v2.1.0_{{env `GIT_COMMIT_SHA`}}"
   }
 }

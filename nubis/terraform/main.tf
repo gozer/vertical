@@ -1,5 +1,5 @@
 module "worker" {
-  source       = "github.com/nubisproject/nubis-terraform//worker?ref=develop"
+  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.1.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -23,7 +23,7 @@ module "worker" {
 
 # This one is for vsql
 module "load_balancer_vsql" {
-  source       = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.0.1"
+  source       = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.1.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -39,7 +39,7 @@ module "load_balancer_vsql" {
 }
 
 module "load_balancer_console" {
-  source       = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.0.1"
+  source       = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.1.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -57,7 +57,7 @@ module "load_balancer_console" {
 }
 
 module "dns_vsql" {
-  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.0.1"
+  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.1.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -66,7 +66,7 @@ module "dns_vsql" {
 }
 
 module "dns_console" {
-  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.0.1"
+  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.1.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -75,7 +75,7 @@ module "dns_console" {
 }
 
 module "rpms" {
-  source       = "github.com/nubisproject/nubis-terraform//bucket?ref=v2.0.1"
+  source       = "github.com/nubisproject/nubis-terraform//bucket?ref=v2.1.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -89,7 +89,7 @@ provider "aws" {
 }
 
 module "info" {
-  source      = "github.com/nubisproject/nubis-terraform//info?ref=v2.0.1"
+  source      = "github.com/nubisproject/nubis-terraform//info?ref=v2.1.0"
   region      = "${var.region}"
   environment = "${var.environment}"
   account     = "${var.account}"
