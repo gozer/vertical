@@ -71,7 +71,7 @@ file { "/etc/sudoers.d/${project_name}":
 
 # Run the management console on a single node ever
 
-$console_command = "consul-do ${project_name}-console $(hostname) && /etc/init.d/vertica-consoled start || /etc/init.d/vertica-consoled stop"
+$console_command = "consul-do ${project_name}-console $(hostname) && systemctl start systemd-vconsole-setup start || systemctl stop systemd-vconsole-setup"
 
 # Run it once on boot
 cron { "${project_name}-console-onboot":
