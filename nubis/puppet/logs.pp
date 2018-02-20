@@ -9,7 +9,7 @@ fluentd::source { 'node-output':
   type        => 'tail',
   format      => 'none ',
 
-  tag         => 'forward.voice.node.stdout',
+  tag         => "forward.$project_name.startup",
   config      => {
     'read_from_head' => true,
     'path'           => "/var/log/vertical-startup.log",
