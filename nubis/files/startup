@@ -1,6 +1,8 @@
 #!/bin/bash -l
 
-exec &> >(tee >( ts > /var/log/startup.log)) 2>&1
+NUBIS_PROJECT=$(nubis-metadata NUBIS_PROJECT)
+
+exec &> >(tee >( ts > /var/log/vertical-startup.log)) 2>&1
 
 export PATH=/usr/local/bin:$PATH
 
@@ -34,7 +36,6 @@ EOF
 echo "Managing SSH key"
 
 NUBIS_ENVIRONMENT=$(nubis-metadata NUBIS_ENVIRONMENT)
-NUBIS_PROJECT=$(nubis-metadata NUBIS_PROJECT)
 KV_PREFIX="$NUBIS_PROJECT-$NUBIS_ENVIRONMENT/$NUBIS_ENVIRONMENT/config"
 
 mkdir -p /home/dbadmin/.ssh
