@@ -27,4 +27,10 @@ resource "consul_keys" "config" {
     value  = "${tls_private_key.vertical.private_key_pem}"
     delete = true
   }
+
+  key {
+    path   = "${module.consul.config_prefix}/clients/security-group-id"
+    value  = "${aws_security_group.vertical_clients.id}"
+    delete = true
+  }
 }

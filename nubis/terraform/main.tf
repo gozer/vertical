@@ -124,6 +124,22 @@ data "aws_iam_policy_document" "vertical" {
 }
 
 # And a custom vertica security group from the world
+resource "aws_security_group" "vertical_clients" {
+  name_prefix = "${var.service_name}-${var.arena}-${var.environment}-vertical-clients-"
+
+  vpc_id = "${module.info.vpc_id}"
+
+  tags = {
+    Name        = "${var.service_name}-${var.arena}-${var.environment}-vertical-clients"
+    Arena       = "${var.arena}"
+    Region      = "${var.region}"
+    Environment = "${var.environment}"
+    Backup      = "true"
+    Shutdown    = "never"
+  }
+}
+
+# And a custom vertica security group from the world
 resource "aws_security_group" "vertical" {
   name_prefix = "${var.service_name}-${var.arena}-${var.environment}-vertical-"
 
@@ -147,6 +163,7 @@ resource "aws_security_group" "vertical" {
 
     security_groups = [
       "${module.load_balancer_vsql.source_security_group_id}",
+      "${aws_security_group.vertical_clients.id}",
     ]
   }
 
