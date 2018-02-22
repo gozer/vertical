@@ -10,7 +10,7 @@ module "worker" {
 
   min_instances = 3
 
-  health_check_type         = "EC2"
+  health_check_type         = "ELB"
   wait_for_capacity_timeout = "30m"
   health_check_grace_period = "1200"
 
