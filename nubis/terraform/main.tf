@@ -242,7 +242,7 @@ resource "aws_ebs_volume" "storage" {
   type              = "gp2"
 
   tags {
-    Name             = "${var.service_name}-${var.arena}-${var.environment}-storage"
+    Name             = "${var.service_name}-${var.arena}-${var.environment}-storage-${count.index}"
     Project          = "${var.service_name}"
     Arena            = "${var.arena}"
     Region           = "${var.region}"
