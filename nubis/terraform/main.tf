@@ -232,3 +232,22 @@ resource "aws_security_group" "vertical" {
     create_before_destroy = true
   }
 }
+
+data "aws_availability_zones" "available" {}
+
+resource "aws_ebs_volume" "storage" {
+  count             = "${length(data.aws_availability_zones.available.names)}"
+  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+  size              = 1024
+  type              = "gp2"
+
+  tags {
+    Name             = "${var.service_name}-${var.arena}-${var.environment}-storage"
+    Project          = "${var.service_name}"
+    Arena            = "${var.arena}"
+    Region           = "${var.region}"
+    Environment      = "${var.environment}"
+    Purpose          = "database"
+    AvailabilityZone = "${data.aws_availability_zones.available.names[count.index]}"
+  }
+}
