@@ -30,6 +30,19 @@ fluentd::source { "${project_name}-launch":
   },
 }
 
+fluentd::source { "${project_name}-autoscale":
+  configfile => $project_name,
+  type       => 'tail',
+  format     => 'none ',
+
+  tag        => "forward.${project_name}.autoscale",
+  config     => {
+    'read_from_head' => true,
+    'path'           => '/home/dbadmin/autoscale/*.log',
+    'pos_file'       => '/home/dbadmin/autoscale/autoscale.pos',
+  },
+}
+
 fluentd::source { "${project_name}-vertica":
   configfile => $project_name,
   type       => 'tail',

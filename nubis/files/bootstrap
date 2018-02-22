@@ -30,7 +30,7 @@ if [ "$BOOTSTRAP" != "$BOOTSTRAP_DONE_MARKER" ]; then
   fi
   
   # Stick in Consul ?
-  API_KEY=$(cat /opt/vertica/config/apikeys.dat | jq -r .[].apikey)
+  API_KEY=$(jq -r .[].apikey < /opt/vertica/config/apikeys.dat)
   echo "API Key: $API_KEY"
   
   consulate kv set "$KV_PREFIX/api-key" "$API_KEY"
@@ -40,4 +40,3 @@ if [ "$BOOTSTRAP" != "$BOOTSTRAP_DONE_MARKER" ]; then
   
   echo "$BOOTSTRAP_DONE_MARKER" > "/var/run/$(nubis-metadata NUBIS_PROJECT)-bootstrapped"
 fi
-

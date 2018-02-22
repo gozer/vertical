@@ -1,0 +1,65 @@
+; This sample vbr configuration file shows backup to AWS s3 shared storage
+; Section headings are enclosed by square brackets.
+; Comments have leading semicolons (;) or pound signs (#).
+; Option and values are separated by an equal sign.
+; Only arguments marked as '!!Mandatory!!' must be specified explicitly.
+; All commented parameters are set to their default value.
+
+; ------------------------------------------- ;
+;;; BASIC PARAMETERS ;;;
+; ------------------------------------------- ;
+
+[S3]
+; This section replaces the [Mapping] section and is required to back up to s3
+
+; !!Mandatory!! S3 bucket name(no default).
+s3_backup_path = s3://{{ getv "/config/S3/Bucket/Backup" }}/backups
+
+; !!Mandatory!! directory used to manage locking during a backup (no default).  If the directory is mounted on the initiator host, you should use "[]" instead of the local host name.  The file system must support POSIX fcntl flock.
+s3_backup_file_system_path = []:/home/dbadmin/backup_locks_dir/
+; s3_backup_file_system_path = otherhost.example:/home/dbadmin/backup_locks_dir/
+
+; Specifies SSL encrypted transfer.
+; s3_encrypt_transport = True
+
+; Specifies the number of threads for upload/download - backup
+; s3_concurrency_backup = 10
+
+; Specifies the number of threads for upload/download - restore
+; s3_concurrency_restore = 10
+
+[Misc]
+; !!Recommended!! Snapshot name
+; Valid values: a-z A-Z 0-9 - _
+; snapshotName = backup_snapshot
+
+[Database]
+; !!Recommended!! If you have more than one database defined on this Vertica cluster, use this parameter to specify which database to backup/restore.
+; dbName = nubis
+
+; If this parameter is True, vbr prompts the user for the database password every time.
+; If False, specify the location of password config file in 'passwordFile' parameter in [Misc] section.
+; dbPromptForPassword = True
+
+; ------------------------------------------- ;
+;;; ADVANCED PARAMETERS ;;;
+; ------------------------------------------- ;
+
+[Misc]
+; The temp directory location on all database hosts.
+; The directory must be readable and writeable by the dbadmin, and must implement POSIX style fcntl lockf locking.
+; tempDir = /tmp/vbr
+
+; Specifies the number of historical backups to retain in addition to the most recent backup.
+; 1 current + n historical backups
+; restorePointLimit = 1
+
+; Full path to the password configuration file
+; Store this file in directory readable only by the dbadmin.
+; (no default)
+; passwordFile = /path/to/vbr/pw.txt
+
+[Database]
+; Vertica user name for vbr to connect to the database.
+; This is rarely needed since dbUser is normally identical to the database administrator
+; dbUser = current_username
