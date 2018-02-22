@@ -174,6 +174,7 @@ resource "aws_security_group" "vertical" {
 
     security_groups = [
       "${aws_security_group.vertical_clients.id}",
+      "${module.info.sso_security_group}",
     ]
   }
 

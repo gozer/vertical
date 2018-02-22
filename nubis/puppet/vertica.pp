@@ -60,6 +60,14 @@ nubis::discovery::service { $project_name:
   tcp      => '5434',
 }
 
+nubis::discovery::service { "${project_name}-console":
+  tcp      => '5450',
+  tags     => [
+    "sso=true",
+    "environment=%%ENVIRONMENT%%",
+  ],
+}
+
 file { "/etc/sudoers.d/${project_name}":
   ensure  => file,
   owner   => 'root',
