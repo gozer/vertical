@@ -4,15 +4,54 @@ class { 'fluentd':
 
 fluentd::configfile { $project_name: }
 
-fluentd::source { 'node-output':
-  configfile  => $project_name,
-  type        => 'tail',
-  format      => 'none ',
+fluentd::source { "${project_name}-startup":
+  configfile => $project_name,
+  type       => 'tail',
+  format     => 'none ',
 
-  tag         => "forward.$project_name.startup",
-  config      => {
+  tag        => "forward.${project_name}.startup",
+  config     => {
     'read_from_head' => true,
-    'path'           => "/var/log/vertical-startup.log",
-    'pos_file'       => "/var/log/vertical-startup.pos",
+    'path'           => '/var/log/vertical-startup.log',
+    'pos_file'       => '/var/log/vertical-startup.pos',
+  },
+}
+
+fluentd::source { "${project_name}-launch":
+  configfile => $project_name,
+  type       => 'tail',
+  format     => 'none ',
+
+  tag        => "forward.${project_name}.launch",
+  config     => {
+    'read_from_head' => true,
+    'path'           => '/var/log/launch.log',
+    'pos_file'       => '/var/log/launch.pos',
+  },
+}
+
+fluentd::source { "${project_name}-vertica":
+  configfile => $project_name,
+  type       => 'tail',
+  format     => 'none ',
+
+  tag        => "forward.${project_name}.logs",
+  config     => {
+    'read_from_head' => true,
+    'path'           => '/opt/vertica/log/*.log',
+    'pos_file'       => '/opt/vertica/log/all.pos',
+  },
+}
+
+fluentd::source { "${project_name}-console":
+  configfile => $project_name,
+  type       => 'tail',
+  format     => 'none ',
+
+  tag        => "forward.${project_name}.console",
+  config     => {
+    'read_from_head' => true,
+    'path'           => '/opt/vconsole/log/mc/*.log',
+    'pos_file'       => '/opt/vconsole/log/mc/all.pos',
   },
 }
