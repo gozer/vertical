@@ -1,14 +1,63 @@
-module "worker" {
+module "worker_0" {
   source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.1.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
   service_name = "${var.service_name}"
-  purpose      = "database"
+  purpose      = "database/0"
   ami          = "${var.ami}"
   elb          = "${module.load_balancer_vsql.name},${module.load_balancer_console.name},"
 
-  min_instances = 3
+  min_instances = 1
+  max_instances = 1
+
+  health_check_type         = "ELB"
+  wait_for_capacity_timeout = "30m"
+  health_check_grace_period = "1200"
+
+  instance_type     = "m4.4xlarge"
+  root_storage_size = "128"
+
+  security_group        = "${aws_security_group.vertical.id}"
+  security_group_custom = true
+}
+
+module "worker_1" {
+  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.1.0"
+  region       = "${var.region}"
+  environment  = "${var.environment}"
+  account      = "${var.account}"
+  service_name = "${var.service_name}"
+  purpose      = "database/1"
+  ami          = "${var.ami}"
+  elb          = "${module.load_balancer_vsql.name},${module.load_balancer_console.name},"
+
+  min_instances = 1
+  max_instances = 1
+
+  health_check_type         = "ELB"
+  wait_for_capacity_timeout = "30m"
+  health_check_grace_period = "1200"
+
+  instance_type     = "m4.4xlarge"
+  root_storage_size = "128"
+
+  security_group        = "${aws_security_group.vertical.id}"
+  security_group_custom = true
+}
+
+module "worker_2" {
+  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.1.0"
+  region       = "${var.region}"
+  environment  = "${var.environment}"
+  account      = "${var.account}"
+  service_name = "${var.service_name}"
+  purpose      = "database/2"
+  ami          = "${var.ami}"
+  elb          = "${module.load_balancer_vsql.name},${module.load_balancer_console.name},"
+
+  min_instances = 1
+  max_instances = 1
 
   health_check_type         = "ELB"
   wait_for_capacity_timeout = "30m"
@@ -81,7 +130,7 @@ module "rpms" {
   account      = "${var.account}"
   service_name = "${var.service_name}"
   purpose      = "rpms"
-  role         = "${module.worker.role}"
+  role         = "${module.worker_0.role},${module.worker_1.role},${module.worker_2.role}"
 }
 
 provider "aws" {
@@ -100,9 +149,19 @@ resource "tls_private_key" "vertical" {
 }
 
 # And a special role to be able to talk to AWS a little
-resource "aws_iam_role_policy" "vertical" {
-  name   = "vertical-${var.region}-${var.arena}-${var.environment}"
-  role   = "${module.worker.role}"
+resource "aws_iam_role_policy" "vertical_0" {
+  name   = "vertical-0-${var.region}-${var.arena}-${var.environment}"
+  role   = "${module.worker_0.role}"
+  policy = "${data.aws_iam_policy_document.vertical.json}"
+}
+resource "aws_iam_role_policy" "vertical_1" {
+  name   = "vertical-1-${var.region}-${var.arena}-${var.environment}"
+  role   = "${module.worker_1.role}"
+  policy = "${data.aws_iam_policy_document.vertical.json}"
+}
+resource "aws_iam_role_policy" "vertical_2" {
+  name   = "vertical-2-${var.region}-${var.arena}-${var.environment}"
+  role   = "${module.worker_2.role}"
   policy = "${data.aws_iam_policy_document.vertical.json}"
 }
 
@@ -113,6 +172,7 @@ data "aws_iam_policy_document" "vertical" {
     actions = [
       "ec2:DescribeInstances",
       "ec2:DescribeAddresses",
+      "ec2:DescribeVolumes",
       "autoscaling:DescribeAutoScalingInstances",
       "autoscaling:DescribeAutoScalingGroups",
     ]
