@@ -57,7 +57,7 @@ include nubis_discovery
 
 # Switch to MC port once working
 nubis::discovery::service { $project_name:
-  tcp      => '5434',
+  tcp      => '5433',
 }
 
 nubis::discovery::service { "${project_name}-console":
