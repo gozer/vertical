@@ -6,7 +6,7 @@ module "worker" {
   service_name = "${var.service_name}"
   purpose      = "database"
   ami          = "${var.ami}"
-  elb          = "${module.load_balancer_vsql.name},${module.load_balancer_console.name},"
+  elb          = "${module.load_balancer_vsql.name}"
 
   min_instances = 3
 
@@ -38,24 +38,6 @@ module "load_balancer_vsql" {
   health_check_target = "TCP:5433"
 }
 
-module "load_balancer_console" {
-  source       = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.1.0"
-  region       = "${var.region}"
-  environment  = "${var.environment}"
-  account      = "${var.account}"
-  service_name = "${var.service_name}-console"
-
-  # We are a unusual Load Balancer with raw connectivity
-  no_ssl_cert        = "1"
-  backend_protocol   = "tcp"
-  protocol_http      = "tcp"
-  protocol_https     = "tcp"
-  backend_port_http  = "5450"
-  backend_port_https = "5450"
-
-  health_check_target = "TCP:5450"
-}
-
 module "dns_vsql" {
   source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.1.0"
   region       = "${var.region}"
@@ -63,15 +45,6 @@ module "dns_vsql" {
   account      = "${var.account}"
   service_name = "${var.service_name}-vsql"
   target       = "${module.load_balancer_vsql.address}"
-}
-
-module "dns_console" {
-  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.1.0"
-  region       = "${var.region}"
-  environment  = "${var.environment}"
-  account      = "${var.account}"
-  service_name = "${var.service_name}-console"
-  target       = "${module.load_balancer_console.address}"
 }
 
 module "rpms" {
@@ -200,7 +173,7 @@ resource "aws_security_group" "vertical" {
     self      = true
 
     security_groups = [
-      "${module.load_balancer_console.source_security_group_id}",
+      "${aws_security_group.vertical_clients.id}",
     ]
   }
 
