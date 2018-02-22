@@ -111,6 +111,24 @@ resource "aws_security_group" "vertical_clients" {
     Backup      = "true"
     Shutdown    = "never"
   }
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+    self      = true
+
+    security_groups = [
+      "${module.info.ssh_security_group}",
+    ]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 # And a custom vertica security group from the world
