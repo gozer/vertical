@@ -33,4 +33,51 @@ resource "consul_keys" "config" {
     value  = "${aws_security_group.vertical_clients.id}"
     delete = true
   }
+
+  key {
+    path   = "${module.consul.config_prefix}/S3/Bucket/RPMS"
+    value  = "${module.rpms.name}"
+    delete = true
+  }
+
+  key {
+    path   = "${module.consul.config_prefix}/S3/Bucket/Backup"
+    value  = "${module.backup.name}"
+    delete = true
+  }
+
+  key {
+    path   = "${module.consul.config_prefix}/AutoScaling/SNS"
+    value  = "${aws_sns_topic.graceful_termination.arn}"
+    delete = true
+  }
+
+  key {
+    path   = "${module.consul.config_prefix}/AutoScaling/LifeCycleHookName"
+    value  = "${var.service_name}-${var.arena}-${var.environment}-shutdown"
+    delete = true
+  }
+
+  key {
+    path   = "${module.consul.config_prefix}/AutoScaling/SQS"
+    value  = "${aws_sqs_queue.graceful_termination.id}"
+    delete = true
+  }
+
+  key {
+    path   = "${module.consul.config_prefix}/AdminPassword"
+    value  = "${random_id.admin_password.b64_url}"
+    delete = true
+  }
+}
+
+# Publish our outputs into Consul for our application to consume
+resource "consul_keys" "storage" {
+  count = "${length(data.aws_availability_zones.available.names)}"
+
+  key {
+    path   = "${module.consul.config_prefix}/volumes/${data.aws_availability_zones.available.names[count.index]}/id"
+    value  = "${element(aws_ebs_volume.storage.*.id,count.index)}"
+    delete = true
+  }
 }

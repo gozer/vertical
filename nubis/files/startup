@@ -1,8 +1,11 @@
 #!/bin/bash -l
 
-NUBIS_PROJECT=$(nubis-metadata NUBIS_PROJECT)
-
 exec &> >(tee >( ts > /var/log/vertical-startup.log)) 2>&1
+
+NUBIS_PROJECT=$(nubis-metadata NUBIS_PROJECT)
+NUBIS_ENVIRONMENT=$(nubis-metadata NUBIS_ENVIRONMENT)
+AWS_REGION=$(nubis-region)
+KV_PREFIX="$NUBIS_PROJECT-$NUBIS_ENVIRONMENT/$NUBIS_ENVIRONMENT/config"
 
 export PATH=/usr/local/bin:$PATH
 
@@ -11,37 +14,36 @@ if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
     echo always > /sys/kernel/mm/transparent_hugepage/enabled
 fi
 
-# Handling some swap
-SWAP_SIZE_MEG=4196
-SWAP_FILE=/var/swap
-
-echo "Making $SWAP_SIZE_MEG Mb of swap in $SWAP_FILE"
-
-dd if=/dev/zero of=$SWAP_FILE bs="1M" count="$SWAP_SIZE_MEG"
-chmod 600 $SWAP_FILE
-mkswap $SWAP_FILE
-swapon $SWAP_FILE
+SQS_URL=$(consulate kv get "$KV_PREFIX/AutoScaling/SQS")
+LIFECYCLE_HOOK_NAME=$(consulate kv get "$KV_PREFIX/AutoScaling/LifeCycleHookName")
+K_SAFETY=$(consul kv get "$KV_PREFIX/k_safety" 2>/dev/null || echo "1" )
+ADMIN_PASSWORD=$(consul kv get "$KV_PREFIX/AdminPassword" 2>/dev/null || echo "nubis" )
 
 # Bootstrap content of variables (XXX: Dynamic password)
 cat <<EOF > /home/dbadmin/autoscale/autoscaling_vars.sh
 PATH="\$PATH:/opt/vertica/bin"
 export PATH
 
-database_name="nubis"
-password="nubis"
+AWS_DEFAULT_REGION="$AWS_REGION"
+export AWS_DEFAULT_REGION
+
+database_name="metrics"
+password="$ADMIN_PASSWORD"
 # For autoscaling between 1 and 3 nodes, set k_safety to 0 (not recommended!)
-k_safety=0                                             
+k_safety=$K_SAFETY
+
+replace_down_node_after=15
+scaleDown_url=$SQS_URL
+lifecycle_hook_name=$LIFECYCLE_HOOK_NAME
 EOF
+
+# Show our values
+cat /home/dbadmin/autoscale/autoscaling_vars.sh
 
 echo "Managing SSH key"
 
-NUBIS_ENVIRONMENT=$(nubis-metadata NUBIS_ENVIRONMENT)
-KV_PREFIX="$NUBIS_PROJECT-$NUBIS_ENVIRONMENT/$NUBIS_ENVIRONMENT/config"
-
 mkdir -p /home/dbadmin/.ssh
 chmod 700 /home/dbadmin/.ssh
-
-
 
 # For automation
 
@@ -57,7 +59,6 @@ chown -R dbadmin:verticadba /home/dbadmin
 
 # Disable DUO for this user, yuck
 echo 'groups = *,!verticadba' >> /etc/confd/templates/duo.tmpl
-systemctl restart confd
 
 # Fix permissions
 chmod 600 /home/dbadmin/autoscale/key.pem
@@ -67,27 +68,39 @@ chmod 755 /home/dbadmin/autoscale/*.sh*
 chmod 6775 /home/dbadmin/autoscale/{add,remove}_nodes.sh
 
 # Install our private RPMs
-RPM_BUCKET=$(aws s3 ls | grep $(nubis-metadata NUBIS_PROJECT)-$(nubis-metadata NUBIS_ENVIRONMENT)-rpms | awk '{print $3}' | head -n1)
+RPM_BUCKET=$(consulate kv get "$KV_PREFIX/S3/Bucket/RPMS")
 
 if [ "$RPM_BUCKET" != "" ]; then
-  aws s3 sync s3://$RPM_BUCKET/ /tmp/rpms/
+  aws s3 sync "s3://$RPM_BUCKET/" /tmp/rpms/
   
   echo "Installing private RPMS"
   
   yum localinstall -y /tmp/rpms/*.rpm
+
+  if [ -r "/tmp/rpms/license.dat" ]; then
+    echo "Installing license"
+    cp /tmp/rpms/license.dat /home/dbadmin/autoscale/license.dat
+    chown dbadmin /home/dbadmin/autoscale/license.dat
+    chmod 600 /home/dbadmin/autoscale/license.dat
+  fi
+
+  rm -rf /tmp/rpms
 fi
+
+# Attach our volume if we can
+#aws --region us-west-2 ec2 describe-volumes --filters "Name=tag-key,Values=Purpose,Name=tag-value,Values=database" "Name=tag-key,Values=Arena,Name=tag-value,Values=core" #"Name=tag-key,Values=Environment,Name=tag-value,Values=stage"  "Name=tag-key,Values=Project,Name=tag-value,Values=vertical" #"Name=tag-key,Values=AvailabilityZone,Name=tag-value,Values=us-west-2a"
 
 #Only bootstrap once and only once
 /usr/local/bin/vertical-bootstrap
 
 # Fix SSH batchmode option
-perl -pi -e's/BatchMode=yes/BatchMode=no/g' /opt/vertica/config/admintools.conf
+perl -pi -e's/BatchMode=yes/BatchMode=no/g' /opt/vertica/config/admintools.conf /opt/vertica/bin/vbr.py
 
-# If we haven't perfomed the boostrap process, we are a slave, so join
+#We did not bootstrap, so join normally
 if [ ! -f "/var/run/$(nubis-metadata NUBIS_PROJECT)-bootstrapped" ]; then
   # This will make us join the cluster, possibly waiting for the master to finish bootstrapping
   /home/dbadmin/autoscale/launch.sh.template
 fi
 
 # Fix SSH batchmode option, again
-perl -pi -e's/BatchMode=yes/BatchMode=no/g' /opt/vertica/config/admintools.conf
+perl -pi -e's/BatchMode=yes/BatchMode=no/g' /opt/vertica/config/admintools.conf /opt/vertica/bin/vbr.py

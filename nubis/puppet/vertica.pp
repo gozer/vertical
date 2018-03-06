@@ -37,7 +37,7 @@ sysctl { 'vm.swappiness':
   value => '1'
 }
 
-file { "/etc/nubis.d/${project_name}":
+file { "/etc/nubis.d/00-${project_name}":
   ensure => file,
   owner  => root,
   group  => root,
@@ -53,6 +53,14 @@ file { '/usr/local/bin/vertical-bootstrap':
   source => 'puppet:///nubis/files/bootstrap',
 }
 
+file { '/home/dbadmin/schema.sql':
+  ensure => file,
+  owner  => root,
+  group  => root,
+  mode   => '0644',
+  source => 'puppet:///nubis/files/schema.sql',
+}
+
 include nubis_discovery
 
 # Switch to MC port once working
@@ -61,10 +69,11 @@ nubis::discovery::service { $project_name:
 }
 
 nubis::discovery::service { "${project_name}-console":
-  tcp      => '5450',
-  tags     => [
-    "sso=true",
-    "environment=%%ENVIRONMENT%%",
+  tcp  => '5450',
+  tags => [
+    'sso=true',
+    'ssl-ssl=true',
+    'environment=%%ENVIRONMENT%%',
   ],
 }
 
@@ -92,4 +101,16 @@ cron { "${project_name}-console-watchdog":
   command => $console_command,
   user    => 'root',
   minute  => '*/5',
+}
+
+cron { "${project_name}-read-scaledown-queue":
+  command => '$HOME/autoscale/read_scaledown_queue.sh',
+  user    => 'dbadmin',
+  minute  => '*',
+}
+
+cron { "${project_name}-down-node-check":
+  command => '$HOME/autoscale/down_node_check.sh',
+  user    => 'dbadmin',
+  minute  => '*',
 }

@@ -1,0 +1,15 @@
+[template]
+src = "backup.conf.tmpl"
+dest = "/etc/vertica-backup.conf"
+prefix = "/%%PROJECT%%-%%ENVIRONMENT%%/%%ENVIRONMENT%%"
+
+uid = 0
+gid = 0
+mode = "0644"
+
+keys = [
+    "/config/*",
+    "/config"
+]
+
+reload_cmd = "consul-do \"$(nubis-metadata NUBIS_PROJECT)-$(nubis-metadata NUBIS_ENVIRONMENT)\" \"$(hostname)\" && su - dbadmin -c \"/opt/vertica/bin/vbr --task init --s3-force-init -c /etc/vertica-backup.conf --debug 3\" || true"
