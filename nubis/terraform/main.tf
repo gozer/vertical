@@ -235,9 +235,6 @@ data "aws_iam_policy_document" "vertical" {
     ]
 
     resources = [
-      "${module.worker_0.autoscaling_group_arn}",
-      "${module.worker_1.autoscaling_group_arn}",
-      "${module.worker_2.autoscaling_group_arn}",
       "arn:aws:autoscaling:${var.region}:${module.info.account_id}:autoScalingGroup:*:autoScalingGroupName/${var.service_name}-${var.environment}-${var.region}-*",
     ]
   }
