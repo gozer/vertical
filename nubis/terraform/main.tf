@@ -218,6 +218,7 @@ data "aws_iam_policy_document" "vertical" {
       "ec2:DescribeAddresses",
       "ec2:DescribeVolumes",
       "ec2:AssignPrivateIpAddresses",
+      "ec2:TerminateInstances",
       "autoscaling:DescribeAutoScalingInstances",
       "autoscaling:DescribeAutoScalingGroups",
     ]
