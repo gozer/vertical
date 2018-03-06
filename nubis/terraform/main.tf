@@ -203,7 +203,7 @@ resource "tls_private_key" "vertical" {
 # And a special role to be able to talk to AWS a little
 resource "aws_iam_role_policy" "vertical" {
   count = "${length(data.aws_availability_zones.available.names)}"
-  name  = "vertical-${var.region}-${var.arena}-${var.environment}-${count.index}"
+  name  = "vertical-autoscaling"
   role  = "${element(list(module.worker_0.role, module.worker_1.role, module.worker_2.role), count.index)}"
 
   policy = "${data.aws_iam_policy_document.vertical.json}"
