@@ -1,6 +1,6 @@
 locals {
-  health_check_type         = "ELB"
-  
+  health_check_type = "ELB"
+
   # Need to tune this to represent the worst-case rebalancing timings
   wait_for_capacity_timeout = "60m"
   health_check_grace_period = "${60*60}"
