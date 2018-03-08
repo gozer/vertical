@@ -114,3 +114,9 @@ cron { "${project_name}-down-node-check":
   user    => 'dbadmin',
   minute  => '*',
 }
+
+# Daily Backups
+cron::daily { "${project_name}-backup":
+  command => 'consul-do "$(nubis-metadata NUBIS_PROJECT)-$(nubis-metadata NUBIS_ENVIRONMENT)" "$(hostname)" && su - dbadmin -c "nubis-cron /opt/vertica/bin/vbr --task backup -c /etc/vertica-backup.conf --debug 3" >> /var/log/vertica-backup.log 2>&1 || true',
+  user    => 'root',
+}
