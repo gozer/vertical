@@ -8,6 +8,9 @@ locals {
   instance_type     = "m4.4xlarge"
   root_storage_size = "1024"
   swap_size_meg     = "4096"
+
+  nubis_sudo_groups = "${var.nubis_sudo_groups}"
+  nubis_user_groups = "${var.nubis_user_groups}"
 }
 
 module "worker_0" {
@@ -19,6 +22,9 @@ module "worker_0" {
   purpose      = "database"
   ami          = "${var.ami}"
   elb          = "${module.load_balancer_vsql.name}"
+
+  nubis_sudo_groups = "${local.nubis_sudo_groups}"
+  nubis_user_groups = "${local.nubis_user_groups}"
 
   tags = ["${list(
     map("key", "DependsOn", "value", "nobody", "propagate_at_launch", true),
@@ -51,6 +57,9 @@ module "worker_1" {
   ami          = "${var.ami}"
   elb          = "${module.load_balancer_vsql.name}"
 
+  nubis_sudo_groups = "${local.nubis_sudo_groups}"
+  nubis_user_groups = "${local.nubis_user_groups}"
+
   tags = ["${list(
     map("key", "DependsOn", "value", "${module.worker_0.autoscaling_group}", "propagate_at_launch", true),
     map("key", "AzIndex", "value", "1", "propagate_at_launch", true),
@@ -81,6 +90,9 @@ module "worker_2" {
   purpose      = "database"
   ami          = "${var.ami}"
   elb          = "${module.load_balancer_vsql.name}"
+
+  nubis_sudo_groups = "${local.nubis_sudo_groups}"
+  nubis_user_groups = "${local.nubis_user_groups}"
 
   tags = ["${list(
     map("key", "DependsOn", "value", "${module.worker_1.autoscaling_group}", "propagate_at_launch", true),
