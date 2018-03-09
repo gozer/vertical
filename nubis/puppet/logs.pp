@@ -55,16 +55,3 @@ fluentd::source { "${project_name}-vertica":
     'pos_file'       => '/opt/vertica/log/all.pos',
   },
 }
-
-fluentd::source { "${project_name}-console":
-  configfile => $project_name,
-  type       => 'tail',
-  format     => 'none ',
-
-  tag        => "forward.${project_name}.console",
-  config     => {
-    'read_from_head' => true,
-    'path'           => '/opt/vconsole/log/mc/*.log',
-    'pos_file'       => '/opt/vconsole/log/mc/all.pos',
-  },
-}
