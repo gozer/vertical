@@ -104,3 +104,6 @@ fi
 
 # Fix SSH batchmode option, again
 perl -pi -e's/BatchMode=yes/BatchMode=no/g' /opt/vertica/config/admintools.conf /opt/vertica/bin/vbr.py
+
+# Possibly install/update user-defined function
+/usr/local/sbin/nubis-vertica-install-user-defined-functions

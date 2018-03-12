@@ -1,0 +1,43 @@
+#!/bin/bash -l
+
+# Increment each time we want to upgrade functions
+FUNCTIONS_VERSION=1
+
+export PATH=/usr/local/bin:/opt/vertica/bin:$PATH
+
+NUBIS_ENVIRONMENT=$(nubis-metadata NUBIS_ENVIRONMENT)
+NUBIS_PROJECT=$(nubis-metadata NUBIS_PROJECT)
+
+KV_PREFIX="$NUBIS_PROJECT-$NUBIS_ENVIRONMENT/$NUBIS_ENVIRONMENT/config"
+
+if [ "$CONSUL_LOCK_HELD" != "true" ]; then
+  # Re-exec ourselves under lock
+  exec consul lock "$KV_PREFIX/function-bootstrap" "$0"
+fi
+
+BOOTSTRAP_DONE_MARKER=$FUNCTIONS_VERSION
+BOOTSTRAP=$(consulate kv get "$KV_PREFIX/function-bootstrap")
+
+if [ "$BOOTSTRAP" != "$BOOTSTRAP_DONE_MARKER" ]; then
+  consulate kv set "$KV_PREFIX/function-bootstrap" "in-progress"
+
+  echo "Performing User-Defined function update"
+  
+  echo "Building functions"
+  if make -C /opt/vertica/sdk/examples UserDefinedLoad; then
+    echo "Updating User-Defined Functions"
+    cat << EOF | vsql -qAt -U dbadmin
+CREATE OR REPLACE LIBRARY SearchAndReplaceLib AS '/opt/vertica/sdk/examples/build/SearchAndReplaceFilter.so';
+CREATE OR REPLACE LIBRARY IconverterLib AS '/opt/vertica/sdk/examples/build/IconverterLib.so';
+CREATE OR REPLACE LIBRARY GZipLib AS '/opt/vertica/sdk/examples/build/GZipLib.so';
+CREATE OR REPLACE LIBRARY BZipLib AS '/opt/vertica/sdk/examples/build/BZipLib.so';
+CREATE OR REPLACE FILTER SearchAndReplace AS LANGUAGE 'C++' NAME 'SearchAndReplaceFilterFactory' LIBRARY SearchAndReplaceLib;
+CREATE OR REPLACE FILTER Iconverter AS LANGUAGE 'C++' NAME 'IconverterFactory' LIBRARY IconverterLib;
+CREATE OR REPLACE FILTER GZip AS LANGUAGE 'C++' NAME 'GZipUnpackerFactory' LIBRARY GZipLib;
+CREATE OR REPLACE FILTER BZip AS LANGUAGE 'C++' NAME 'BZipUnpackerFactory' LIBRARY BZipLib;
+EOF
+
+  # And we are done
+  consulate kv set "$KV_PREFIX/function-bootstrap" "$BOOTSTRAP_DONE_MARKER"
+  fi
+fi
