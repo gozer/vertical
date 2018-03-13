@@ -7,6 +7,7 @@ locals {
 
   instance_type     = "m4.4xlarge"
   root_storage_size = "1024"
+  root_storage_type = "gp2"
   swap_size_meg     = "4096"
 
   nubis_sudo_groups = "${var.nubis_sudo_groups}"
@@ -14,7 +15,7 @@ locals {
 }
 
 module "worker_0" {
-  source       = "github.com/gozer/nubis-terraform//worker?ref=issue%2F160%2Faz"
+  source       = "github.com/gozer/nubis-terraform//worker?ref=develop"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -39,6 +40,7 @@ module "worker_0" {
 
   instance_type     = "${local.instance_type}"
   root_storage_size = "${local.root_storage_size}"
+  root_storage_type = "${local.root_storage_type}"
   swap_size_meg     = "${local.swap_size_meg}"
 
   security_group        = "${aws_security_group.vertical.id}"
@@ -48,7 +50,7 @@ module "worker_0" {
 }
 
 module "worker_1" {
-  source       = "github.com/gozer/nubis-terraform//worker?ref=issue%2F160%2Faz"
+  source       = "github.com/gozer/nubis-terraform//worker?ref=develop"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -73,6 +75,7 @@ module "worker_1" {
 
   instance_type     = "${local.instance_type}"
   root_storage_size = "${local.root_storage_size}"
+  root_storage_type = "${local.root_storage_type}"
   swap_size_meg     = "${local.swap_size_meg}"
 
   security_group        = "${aws_security_group.vertical.id}"
@@ -82,7 +85,7 @@ module "worker_1" {
 }
 
 module "worker_2" {
-  source       = "github.com/gozer/nubis-terraform//worker?ref=issue%2F160%2Faz"
+  source       = "github.com/gozer/nubis-terraform//worker?ref=develop"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -107,6 +110,7 @@ module "worker_2" {
 
   instance_type     = "${local.instance_type}"
   root_storage_size = "${local.root_storage_size}"
+  root_storage_type = "${local.root_storage_type}"
   swap_size_meg     = "${local.swap_size_meg}"
 
   security_group        = "${aws_security_group.vertical.id}"
