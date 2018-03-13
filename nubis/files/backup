@@ -1,0 +1,58 @@
+#!/bin/bash -l
+
+NUBIS_PROJECT=$(nubis-metadata NUBIS_PROJECT)
+NUBIS_ENVIRONMENT=$(nubis-metadata NUBIS_ENVIRONMENT)
+
+LOCK="${NUBIS_PROJECT}-${NUBIS_ENVIRONMENT}-backup"
+
+# Redirect logs to a log file
+exec &> >(tee >( ts >> "/var/log/${NUBIS_PROJECT}-backup.log")) 2>&1
+
+CONFIG=/etc/vertica-backup.conf
+USERNAME=dbadmin
+VBR=/opt/vertica/bin/vbr
+
+function init () {
+  echo "Initializing Backups"
+  su - $USERNAME -c "$VBR --task init --s3-force-init -c $CONFIG --debug 3"
+  return $?
+}
+
+function backup () {
+  echo "Performing Backup"
+  su - $USERNAME -c "$VBR --task backup -c $CONFIG --debug 3"
+  BACKUP_RV=$?
+  su - $USERNAME -c "$VBR --task listbackup -c $CONFIG --debug 3"
+  return $BACKUP_RV
+}
+
+# Are we the current backup leader ?
+if consul-do "${LOCK}" "$(hostname)"; then
+  echo "We are the backup leader"
+  
+  if [ ! -r "$CONFIG" ]; then
+    echo "Can't read config file $CONFIG"
+    exit 1
+  fi
+  
+  ACTION=$1
+
+  case $ACTION in
+    backup)
+      init
+      backup
+      exit $?
+      ;;
+    init)
+      init
+      exit $?
+      ;;
+    *)
+      echo "Usage: $0 [backup|init]"
+      exit 1
+      ;;
+  esac
+else
+  echo "We are not the current backup leader, noop"
+  exit
+fi

@@ -89,7 +89,15 @@ cron { "${project_name}-down-node-check":
 }
 
 # Daily Backups
+file { "/usr/local/bin/nubis-${project_name}-backup":
+  ensure => file,
+  owner  => root,
+  group  => root,
+  mode   => '0755',
+  source => 'puppet:///nubis/files/backup',
+}
+
 cron::daily { "${project_name}-backup":
-  command => "consul-do \"$(nubis-metadata NUBIS_PROJECT)-$(nubis-metadata NUBIS_ENVIRONMENT)\" \"$(hostname)\" && su - dbadmin -c \"nubis-cron ${project_name}-backup /opt/vertica/bin/vbr --task backup -c /etc/vertica-backup.conf --debug 3\" >> /var/log/vertica-backup.log 2>&1 || true",
+  command => "nubis-cron ${project_name}-backup /usr/local/bin/nubis-${project_name}-backup",
   user    => 'root',
 }
