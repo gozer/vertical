@@ -21,9 +21,9 @@ variable "service_name" {
 variable "ami" {}
 
 variable "nubis_sudo_groups" {
-  default = "nubis_global_admins"
+  default = "nubis_global_admins,team_dbeng"
 }
 
 variable "nubis_user_groups" {
-  default = "team_dbeng"
+  default = ""
 }
