@@ -256,6 +256,59 @@ data "aws_iam_policy_document" "vertical" {
   }
 
   statement {
+    sid = "termination"
+
+    actions = [
+      "ec2:TerminateInstances",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:ResourceTag/Project"
+
+      values = [
+        "${var.service_name}",
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:ResourceTag/Arena"
+
+      values = [
+        "${var.arena}",
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:ResourceTag/Region"
+
+      values = [
+        "${var.region}",
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:ResourceTag/Environment"
+
+      values = [
+        "${var.environment}",
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:ResourceTag/Purpose"
+
+      values = [
+        "database",
+      ]
+    }
+  }
+
+  statement {
     actions = [
       "sns:Publish",
     ]
