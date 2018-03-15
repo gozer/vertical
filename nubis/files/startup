@@ -14,6 +14,11 @@ if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
     echo always > /sys/kernel/mm/transparent_hugepage/enabled
 fi
 
+if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+    echo "Disable Defrag"
+    echo never > /sys/kernel/mm/transparent_hugepage/defrag
+fi
+
 SQS_URL=$(consulate kv get "$KV_PREFIX/AutoScaling/SQS")
 LIFECYCLE_HOOK_NAME=$(consulate kv get "$KV_PREFIX/AutoScaling/LifeCycleHookName")
 K_SAFETY=$(consul kv get "$KV_PREFIX/k_safety" 2>/dev/null || echo "1" )
