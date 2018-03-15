@@ -10,32 +10,40 @@ LOCK="${NUBIS_PROJECT}-${NUBIS_ENVIRONMENT}-backup"
 # Redirect logs to a log file
 exec &> >(tee >( ts >> "/var/log/${NUBIS_PROJECT}-backup.log")) 2>&1
 
-CONFIG=/etc/vertica-backup.conf
+CONFIGS="/etc/vertica-backup*.conf"
 USERNAME=dbadmin
 VBR=/opt/vertica/bin/vbr
 
 function init () {
   echo "Initializing Backups"
-  su - $USERNAME -c "$VBR --task init --s3-force-init -c $CONFIG --debug 3"
-  return $?
+  INIT_RV=0
+  for CONFIG in $CONFIGS; do
+    echo "[$CONFIG]"
+    su - $USERNAME -c "$VBR --task init --s3-force-init -c $CONFIG --debug 3"
+    RV=$?
+    INIT_RV=$(( INIT_RV || RV ))
+  done
+  return $INIT_RV
 }
 
 function backup () {
   echo "Performing Backup"
-  su - $USERNAME -c "$VBR --task backup -c $CONFIG --debug 3"
-  BACKUP_RV=$?
-  su - $USERNAME -c "$VBR --task listbackup -c $CONFIG --debug 3"
+  BACKUP_RV=0
+
+  for CONFIG in $CONFIGS; do
+    echo "[$CONFIG]"
+    su - $USERNAME -c "$VBR --task backup -c $CONFIG --debug 3"
+    RV=$?
+    BACKUP_RV=$(( BACKUP_RV || RV ))
+    su - $USERNAME -c "$VBR --task listbackup -c $CONFIG --debug 3"
+  done
+
   return $BACKUP_RV
 }
 
 # Are we the current backup leader ?
 if consul-do "${LOCK}" "$(hostname)"; then
   echo "We are the backup leader"
-  
-  if [ ! -r "$CONFIG" ]; then
-    echo "Can't read config file $CONFIG"
-    exit 1
-  fi
   
   ACTION=$1
 

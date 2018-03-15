@@ -31,7 +31,8 @@ s3_backup_file_system_path = []:/home/dbadmin/backup_locks_dir/
 [Misc]
 ; !!Recommended!! Snapshot name
 ; Valid values: a-z A-Z 0-9 - _
-; snapshotName = backup_snapshot
+snapshotName = object_snapshot
+objects = public,autoscale
 
 [Database]
 ; !!Recommended!! If you have more than one database defined on this Vertica cluster, use this parameter to specify which database to backup/restore.
