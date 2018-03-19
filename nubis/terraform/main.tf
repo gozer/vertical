@@ -262,6 +262,10 @@ data "aws_iam_policy_document" "vertical" {
       "ec2:TerminateInstances",
     ]
 
+    resources = [
+      "*",
+    ]
+
     condition {
       test     = "StringEquals"
       variable = "ec2:ResourceTag/Project"
