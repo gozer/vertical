@@ -248,6 +248,7 @@ data "aws_iam_policy_document" "vertical" {
     actions = [
       "autoscaling:CompleteLifecycleAction",
       "autoscaling:RecordLifecycleActionHeartbeat",
+      "autoscaling:TerminateInstanceInAutoScalingGroup",
     ]
 
     resources = [
