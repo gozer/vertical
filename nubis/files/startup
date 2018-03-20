@@ -19,6 +19,14 @@ if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
     echo never > /sys/kernel/mm/transparent_hugepage/defrag
 fi
 
+READ_AHEAD_MINIMUM=2048
+READ_AHEAD=$(/sbin/blockdev --getra /dev/xvda)
+
+if [ "$READ_AHEAD" -lt "$READ_AHEAD_MINIMUM" ]; then
+    echo "Increase readhead size to $READ_AHEAD_MINIMUM"
+    /sbin/blockdev --setra "$READ_AHEAD_MINIMUM" /dev/xvda
+fi
+
 SQS_URL=$(consulate kv get "$KV_PREFIX/AutoScaling/SQS")
 LIFECYCLE_HOOK_NAME=$(consulate kv get "$KV_PREFIX/AutoScaling/LifeCycleHookName")
 K_SAFETY=$(consul kv get "$KV_PREFIX/k_safety" 2>/dev/null || echo "1" )
