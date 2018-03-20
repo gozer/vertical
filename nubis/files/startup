@@ -37,7 +37,7 @@ password="$ADMIN_PASSWORD"
 # For autoscaling between 1 and 3 nodes, set k_safety to 0 (not recommended!)
 k_safety=$K_SAFETY
 
-replace_down_node_after=15
+replace_down_node_after=5
 scaleDown_url=$SQS_URL
 lifecycle_hook_name=$LIFECYCLE_HOOK_NAME
 EOF
