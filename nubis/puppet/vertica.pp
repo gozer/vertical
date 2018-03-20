@@ -103,6 +103,6 @@ file { "/usr/local/bin/nubis-${project_name}-backup":
 }
 
 cron::daily { "${project_name}-backup":
-  command => "nubis-cron ${project_name}-backup /usr/local/bin/nubis-${project_name}-backup",
+  command => "nubis-cron ${project_name}-backup /usr/local/bin/nubis-${project_name}-backup backup",
   user    => 'root',
 }
