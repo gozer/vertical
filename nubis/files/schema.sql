@@ -117,6 +117,28 @@ CREATE TABLE IF NOT EXISTS public.mozilla_staff
     snapshot_date date
 );
 
+CREATE TABLE public.mozilla_staff_plus
+(
+    employee_id varchar(255),
+    first_name varchar(255),
+    last_name varchar(255),
+    email_address varchar(512),
+    supervisory_organization varchar(255),
+    cost_center varchar(255),
+    functional_group varchar(255),
+    manager_id varchar(255),
+    manager_lastname varchar(255),
+    manager_firstname varchar(255),
+    manager_email varchar(512),
+    is_manager varchar(2),
+    hire_date date,
+    location varchar(255),
+    home_city varchar(255),
+    home_country varchar(255),
+    home_postal varchar(255),
+    desk_number varchar(255),
+    snapshot_date date
+);
 
 CREATE TABLE IF NOT EXISTS public.firefox_download_counts
 (
