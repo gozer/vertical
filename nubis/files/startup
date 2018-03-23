@@ -19,12 +19,47 @@ if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
     echo never > /sys/kernel/mm/transparent_hugepage/defrag
 fi
 
+# Do we have a dedicated data disk ?
+if file -s /dev/xvdf; then
+
+  # Prepare data disk
+  DATA_DEVICE=/dev/xvdf
+  DATA_PATH=/vertica
+
+  echo "Mounting $DATA_DEVICE on $DATA_PATH"
+
+  # Is it blank ?
+  if ! tune2fs -l "$DATA_DEVICE" ; then
+    echo "Making New filesystem on $DATA_DEVICE"
+    mkfs.ext4 -L vertica "$DATA_DEVICE"
+  fi
+
+  # make sure our target mountpoint exists
+  mkdir -p "$DATA_PATH"
+  chown root:root "$DATA_PATH"
+
+  # Mount the device
+  echo "Mounting $DATA_DEVICE on $DATA_PATH"
+  mount "$DATA_DEVICE" "$DATA_PATH"
+
+  # Ensure data directory is present
+  if [ ! -d "$DATA_PATH/data" ]; then
+    mkdir "$DATA_PATH/data"
+  fi
+
+  # Ensure correct permissions
+  chown -R dbadmin:verticadba "$DATA_PATH/data"
+else
+  # Use our root volume for data
+  DATA_DEVICE=$(findmnt -n -o SOURCE /)
+fi
+
 READ_AHEAD_MINIMUM=2048
-READ_AHEAD=$(/sbin/blockdev --getra /dev/xvda)
+READ_AHEAD=$(/sbin/blockdev --getra "$DATA_DEVICE")
 
 if [ "$READ_AHEAD" -lt "$READ_AHEAD_MINIMUM" ]; then
     echo "Increase readhead size to $READ_AHEAD_MINIMUM"
-    /sbin/blockdev --setra "$READ_AHEAD_MINIMUM" /dev/xvda
+    /sbin/blockdev --setra "$READ_AHEAD_MINIMUM" "$DATA_DEVICE"
 fi
 
 SQS_URL=$(consulate kv get "$KV_PREFIX/AutoScaling/SQS")

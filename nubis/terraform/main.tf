@@ -8,6 +8,11 @@ locals {
   instance_type     = "m4.4xlarge"
   root_storage_size = "1024"
   root_storage_type = "gp2"
+  data_storage_size = "1024"
+  data_storage_type = "gp2"
+
+  storage_encrypted_at_rest = true
+
   swap_size_meg     = "4096"
 
   nubis_sudo_groups = "${var.nubis_sudo_groups}"
