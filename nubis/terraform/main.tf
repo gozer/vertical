@@ -49,6 +49,8 @@ module "worker_0" {
   root_storage_type = "${local.root_storage_type}"
   data_storage_size = "${local.data_storage_size}"
   data_storage_type = "${local.data_storage_type}"
+  
+  storage_encrypted_at_rest = "${local.storage_encrypted_at_rest}"
 
   swap_size_meg     = "${local.swap_size_meg}"
 
@@ -88,6 +90,8 @@ module "worker_1" {
   root_storage_type = "${local.root_storage_type}"
   data_storage_size = "${local.data_storage_size}"
   data_storage_type = "${local.data_storage_type}"
+  
+  storage_encrypted_at_rest = "${local.storage_encrypted_at_rest}"
 
   swap_size_meg     = "${local.swap_size_meg}"
 
@@ -127,6 +131,8 @@ module "worker_2" {
   root_storage_type = "${local.root_storage_type}"
   data_storage_size = "${local.data_storage_size}"
   data_storage_type = "${local.data_storage_type}"
+  
+  storage_encrypted_at_rest = "${local.storage_encrypted_at_rest}"
 
   swap_size_meg     = "${local.swap_size_meg}"
 
