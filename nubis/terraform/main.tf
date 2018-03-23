@@ -44,8 +44,12 @@ module "worker_0" {
   health_check_grace_period = "${local.health_check_grace_period}"
 
   instance_type     = "${local.instance_type}"
+
   root_storage_size = "${local.root_storage_size}"
   root_storage_type = "${local.root_storage_type}"
+  data_storage_size = "${local.data_storage_size}"
+  data_storage_type = "${local.data_storage_type}"
+
   swap_size_meg     = "${local.swap_size_meg}"
 
   security_group        = "${aws_security_group.vertical.id}"
@@ -79,8 +83,12 @@ module "worker_1" {
   health_check_grace_period = "${local.health_check_grace_period}"
 
   instance_type     = "${local.instance_type}"
+
   root_storage_size = "${local.root_storage_size}"
   root_storage_type = "${local.root_storage_type}"
+  data_storage_size = "${local.data_storage_size}"
+  data_storage_type = "${local.data_storage_type}"
+
   swap_size_meg     = "${local.swap_size_meg}"
 
   security_group        = "${aws_security_group.vertical.id}"
@@ -114,8 +122,12 @@ module "worker_2" {
   health_check_grace_period = "${local.health_check_grace_period}"
 
   instance_type     = "${local.instance_type}"
+
   root_storage_size = "${local.root_storage_size}"
   root_storage_type = "${local.root_storage_type}"
+  data_storage_size = "${local.data_storage_size}"
+  data_storage_type = "${local.data_storage_type}"
+
   swap_size_meg     = "${local.swap_size_meg}"
 
   security_group        = "${aws_security_group.vertical.id}"
