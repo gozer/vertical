@@ -13,7 +13,7 @@ locals {
 
   storage_encrypted_at_rest = true
 
-  swap_size_meg     = "4096"
+  swap_size_meg = "4096"
 
   nubis_sudo_groups = "${var.nubis_sudo_groups}"
   nubis_user_groups = "${var.nubis_user_groups}"
@@ -43,16 +43,16 @@ module "worker_0" {
   wait_for_capacity_timeout = "${local.wait_for_capacity_timeout}"
   health_check_grace_period = "${local.health_check_grace_period}"
 
-  instance_type     = "${local.instance_type}"
+  instance_type = "${local.instance_type}"
 
   root_storage_size = "${local.root_storage_size}"
   root_storage_type = "${local.root_storage_type}"
   data_storage_size = "${local.data_storage_size}"
   data_storage_type = "${local.data_storage_type}"
-  
+
   storage_encrypted_at_rest = "${local.storage_encrypted_at_rest}"
 
-  swap_size_meg     = "${local.swap_size_meg}"
+  swap_size_meg = "${local.swap_size_meg}"
 
   security_group        = "${aws_security_group.vertical.id}"
   security_group_custom = true
@@ -84,16 +84,16 @@ module "worker_1" {
   wait_for_capacity_timeout = "${local.wait_for_capacity_timeout}"
   health_check_grace_period = "${local.health_check_grace_period}"
 
-  instance_type     = "${local.instance_type}"
+  instance_type = "${local.instance_type}"
 
   root_storage_size = "${local.root_storage_size}"
   root_storage_type = "${local.root_storage_type}"
   data_storage_size = "${local.data_storage_size}"
   data_storage_type = "${local.data_storage_type}"
-  
+
   storage_encrypted_at_rest = "${local.storage_encrypted_at_rest}"
 
-  swap_size_meg     = "${local.swap_size_meg}"
+  swap_size_meg = "${local.swap_size_meg}"
 
   security_group        = "${aws_security_group.vertical.id}"
   security_group_custom = true
@@ -125,16 +125,16 @@ module "worker_2" {
   wait_for_capacity_timeout = "${local.wait_for_capacity_timeout}"
   health_check_grace_period = "${local.health_check_grace_period}"
 
-  instance_type     = "${local.instance_type}"
+  instance_type = "${local.instance_type}"
 
   root_storage_size = "${local.root_storage_size}"
   root_storage_type = "${local.root_storage_type}"
   data_storage_size = "${local.data_storage_size}"
   data_storage_type = "${local.data_storage_type}"
-  
+
   storage_encrypted_at_rest = "${local.storage_encrypted_at_rest}"
 
-  swap_size_meg     = "${local.swap_size_meg}"
+  swap_size_meg = "${local.swap_size_meg}"
 
   security_group        = "${aws_security_group.vertical.id}"
   security_group_custom = true
