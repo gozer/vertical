@@ -505,24 +505,6 @@ resource "aws_security_group" "vertical" {
 
 data "aws_availability_zones" "available" {}
 
-resource "aws_ebs_volume" "storage" {
-  count             = "${length(data.aws_availability_zones.available.names)}"
-  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
-  size              = 1024
-  type              = "gp2"
-
-  tags {
-    Name             = "${var.service_name}-${var.arena}-${var.environment}-storage-${count.index}"
-    Project          = "${var.service_name}"
-    Arena            = "${var.arena}"
-    Region           = "${var.region}"
-    Environment      = "${var.environment}"
-    Purpose          = "database"
-    AvailabilityZone = "${data.aws_availability_zones.available.names[count.index]}"
-    AzIndex          = "${count.index}"
-  }
-}
-
 resource "aws_sns_topic" "graceful_termination" {
   name = "${var.service_name}-${var.arena}-${var.environment}-termination"
 }
