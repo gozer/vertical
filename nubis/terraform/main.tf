@@ -6,7 +6,7 @@ locals {
   health_check_grace_period = "${60*60}"
 
   instance_type     = "m4.4xlarge"
-  root_storage_size = "1024"
+  root_storage_size = "64"
   root_storage_type = "gp2"
   data_storage_size = "1024"
   data_storage_type = "gp2"
