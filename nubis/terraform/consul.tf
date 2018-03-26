@@ -70,14 +70,3 @@ resource "consul_keys" "config" {
     delete = true
   }
 }
-
-# Publish our outputs into Consul for our application to consume
-resource "consul_keys" "storage" {
-  count = "${length(data.aws_availability_zones.available.names)}"
-
-  key {
-    path   = "${module.consul.config_prefix}/volumes/${data.aws_availability_zones.available.names[count.index]}/id"
-    value  = "${element(aws_ebs_volume.storage.*.id,count.index)}"
-    delete = true
-  }
-}
