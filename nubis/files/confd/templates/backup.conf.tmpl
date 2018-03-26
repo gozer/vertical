@@ -13,7 +13,7 @@
 ; This section replaces the [Mapping] section and is required to back up to s3
 
 ; !!Mandatory!! S3 bucket name(no default).
-s3_backup_path = s3://{{ getv "/config/S3/Bucket/Backup" }}/backups
+s3_backup_path = s3://{{ getv "/config/S3/Bucket/Backup" }}/backups/full
 
 ; !!Mandatory!! directory used to manage locking during a backup (no default).  If the directory is mounted on the initiator host, you should use "[]" instead of the local host name.  The file system must support POSIX fcntl flock.
 s3_backup_file_system_path = []:/home/dbadmin/backup_locks_dir/
