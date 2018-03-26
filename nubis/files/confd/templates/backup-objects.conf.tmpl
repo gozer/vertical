@@ -16,7 +16,7 @@
 s3_backup_path = s3://{{ getv "/config/S3/Bucket/Backup" }}/backups/objects
 
 ; !!Mandatory!! directory used to manage locking during a backup (no default).  If the directory is mounted on the initiator host, you should use "[]" instead of the local host name.  The file system must support POSIX fcntl flock.
-s3_backup_file_system_path = []:/home/dbadmin/backup_locks_dir/
+s3_backup_file_system_path = []:/home/dbadmin/backup_locks_dir/objects/
 ; s3_backup_file_system_path = otherhost.example:/home/dbadmin/backup_locks_dir/
 
 ; Specifies SSL encrypted transfer.
