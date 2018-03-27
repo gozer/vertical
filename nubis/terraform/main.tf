@@ -562,14 +562,14 @@ resource "random_id" "admin_password" {
   byte_length = 16
 }
 
-resource "tls_private_key" "vertical" {
+resource "tls_private_key" "vertical_ssl" {
   algorithm = "RSA"
 }
 
 resource "tls_self_signed_cert" "vertical" {
 
-  key_algorithm   = "${tls_private_key.vertical.algorithm}"
-  private_key_pem = "${tls_private_key.vertical.private_key_pem}"
+  key_algorithm   = "${tls_private_key.vertical_ssl.algorithm}"
+  private_key_pem = "${tls_private_key.vertical_ssl.private_key_pem}"
 
   # Certificate expires after one year
   validity_period_hours = 8760
