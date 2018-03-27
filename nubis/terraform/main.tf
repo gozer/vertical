@@ -561,3 +561,37 @@ resource "aws_iam_role_policy" "termination" {
 resource "random_id" "admin_password" {
   byte_length = 16
 }
+
+resource "tls_private_key" "vertical" {
+  algorithm = "RSA"
+}
+
+resource "tls_self_signed_cert" "vertical" {
+
+  key_algorithm   = "${tls_private_key.vertical.algorithm}"
+  private_key_pem = "${tls_private_key.vertical.private_key_pem}"
+
+  # Certificate expires after one year
+  validity_period_hours = 8760
+
+  # Generate a new certificate if Terraform is run within three
+  # hours of the certificate's expiration time. ( 120 days )
+  early_renewal_hours = 2880
+
+  is_ca_certificate = true
+
+  # Reasonable set of uses for a server SSL certificate.
+  allowed_uses = [
+    "key_encipherment",
+    "digital_signature",
+    "cert_signing",
+    "server_auth",
+    "client_auth",
+  ]
+
+  subject {
+    common_name  = "${var.environment}.${var.service_name}.service.consul"
+    organization = "Mozilla Nubis"
+  }
+}
+

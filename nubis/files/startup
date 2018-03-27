@@ -102,6 +102,10 @@ consulate kv get "$KV_PREFIX/ssh/public-key" > /home/dbadmin/.ssh/id_rsa.pub
 consulate kv get "$KV_PREFIX/ssh/public-key" > /home/dbadmin/.ssh/authorized_keys
 consulate kv get "$KV_PREFIX/ssh/public-key" > /home/dbadmin/autoscale/srcClusterKey.pub
 
+# For SSL
+consulate kv get "$KV_PREFIX/SSL/Certificate" > /home/dbadmin/autoscale/server.crt
+consulate kv get "$KV_PREFIX/SSL/Key" > /home/dbadmin/autoscale/server.key
+
 # Fix ownership
 chown -R dbadmin:verticadba /home/dbadmin
 

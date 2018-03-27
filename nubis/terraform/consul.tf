@@ -69,4 +69,17 @@ resource "consul_keys" "config" {
     value  = "${random_id.admin_password.b64_url}"
     delete = true
   }
+
+  key {
+    path   = "${module.consul.config_prefix}/SSL/Certificate"
+    value  = "tls_self_signed_cert.vertical.cert_pem"
+    delete = true
+  }
+
+  key {
+    path   = "${module.consul.config_prefix}/SSL/Key"
+    value  = "${tls_private_key.vertical.private_key_pem}"
+    delete = true
+  }
+
 }
