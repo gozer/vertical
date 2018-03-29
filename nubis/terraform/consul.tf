@@ -72,7 +72,7 @@ resource "consul_keys" "config" {
 
   key {
     path   = "${module.consul.config_prefix}/SSL/Certificate"
-    value  = "${tls_self_signed_cert.vertical_ssl.cert_pem}"
+    value  = "${tls_self_signed_cert.vertical.cert_pem}"
     delete = true
   }
 
