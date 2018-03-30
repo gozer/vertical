@@ -103,7 +103,12 @@ consulate kv get "$KV_PREFIX/ssh/public-key" > /home/dbadmin/.ssh/authorized_key
 consulate kv get "$KV_PREFIX/ssh/public-key" > /home/dbadmin/autoscale/srcClusterKey.pub
 
 # For SSL
+
+mkdir -p /home/dbadmin/.vsql
+chmod 700 /home/dbadmin/.vsql
+
 consulate kv get "$KV_PREFIX/SSL/Certificate" > /home/dbadmin/autoscale/server.crt
+consulate kv get "$KV_PREFIX/SSL/Certificate" > /home/dbadmin/.vsql/root.crt
 consulate kv get "$KV_PREFIX/SSL/Key" > /home/dbadmin/autoscale/server.key
 
 # Fix ownership
