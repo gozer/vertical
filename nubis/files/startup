@@ -124,6 +124,10 @@ chmod 600 /home/dbadmin/.ssh/*
 chmod 755 /home/dbadmin/autoscale/*.sh*
 chmod 6775 /home/dbadmin/autoscale/{add,remove}_nodes.sh
 
+# Set TZ
+echo 'TZ=UTC' >> /home/dbadmin/.bash_profile
+echo 'export TZ' >> /home/dbadmin/.bash_profile
+
 # Install our private RPMs
 RPM_BUCKET=$(consulate kv get "$KV_PREFIX/S3/Bucket/RPMS")
 
