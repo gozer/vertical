@@ -20,7 +20,7 @@ locals {
 }
 
 module "worker_0" {
-  source       = "github.com/gozer/nubis-terraform//worker?ref=v2.2.0"
+  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.2.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -61,7 +61,7 @@ module "worker_0" {
 }
 
 module "worker_1" {
-  source       = "github.com/gozer/nubis-terraform//worker?ref=v2.2.0"
+  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.2.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -102,7 +102,7 @@ module "worker_1" {
 }
 
 module "worker_2" {
-  source       = "github.com/gozer/nubis-terraform//worker?ref=v2.2.0"
+  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.2.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
