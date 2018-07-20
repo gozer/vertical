@@ -13,6 +13,7 @@ exec &> >(tee >( ts >> "/var/log/${NUBIS_PROJECT}-backup.log")) 2>&1
 CONFIGS="/etc/vertica-backup*.conf"
 USERNAME=dbadmin
 VBR=/opt/vertica/bin/vbr
+VSQL=/opt/vertica/bin/vsql
 
 function init () {
   echo "Initializing Backups"
@@ -37,6 +38,21 @@ function backup () {
     BACKUP_RV=$(( BACKUP_RV || RV ))
     su - $USERNAME -c "$VBR --task listbackup -c $CONFIG --debug 3"
   done
+
+  return $BACKUP_RV
+}
+
+function dump () {
+  echo "Performing Raw SQL Dump"
+  BACKUP_RV=0
+
+  for table in $(su - $USERNAME -c "$VSQL -tc \"select table_name from all_tables where schema_name='public'"\"" | sort); do
+    vsql -c "SELECT EXPORT_TABLES('','$table')" -t -o $table.sql
+    vsql -At -c "SELECT * FROM $table" | pv --name $table | bzip2 > $table.sql.bz2
+  done
+
+  RV=$?
+  BACKUP_RV=$(( BACKUP_RV || RV ))
 
   return $BACKUP_RV
 }
