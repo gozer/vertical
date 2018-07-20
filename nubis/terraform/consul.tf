@@ -81,5 +81,4 @@ resource "consul_keys" "config" {
     value  = "${tls_private_key.vertical_ssl.private_key_pem}"
     delete = true
   }
-
 }

@@ -214,14 +214,14 @@ module "rpms" {
 }
 
 module "backup" {
-  source       = "github.com/nubisproject/nubis-terraform//bucket?ref=v2.3.0"
-  region       = "${var.region}"
-  environment  = "${var.environment}"
-  account      = "${var.account}"
-  service_name = "${var.service_name}"
-  purpose      = "backup"
-  role_cnt     = "${length(data.aws_availability_zones.available.names)}"
-  role         = "${module.worker_0.role},${module.worker_1.role},${module.worker_2.role}"
+  source                    = "github.com/nubisproject/nubis-terraform//bucket?ref=v2.3.0"
+  region                    = "${var.region}"
+  environment               = "${var.environment}"
+  account                   = "${var.account}"
+  service_name              = "${var.service_name}"
+  purpose                   = "backup"
+  role_cnt                  = "${length(data.aws_availability_zones.available.names)}"
+  role                      = "${module.worker_0.role},${module.worker_1.role},${module.worker_2.role}"
   storage_encrypted_at_rest = true
 }
 
@@ -568,7 +568,6 @@ resource "tls_private_key" "vertical_ssl" {
 }
 
 resource "tls_self_signed_cert" "vertical" {
-
   key_algorithm   = "${tls_private_key.vertical_ssl.algorithm}"
   private_key_pem = "${tls_private_key.vertical_ssl.private_key_pem}"
 
@@ -595,4 +594,3 @@ resource "tls_self_signed_cert" "vertical" {
     organization = "Mozilla Nubis"
   }
 }
-
