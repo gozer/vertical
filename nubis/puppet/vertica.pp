@@ -38,8 +38,8 @@ sysctl { 'vm.swappiness':
 }
 
 service { 'tuned':
-  ensure  => 'stopped',
-  enable  => false,
+  ensure => 'stopped',
+  enable => false,
 }
 
 file { "/etc/nubis.d/00-${project_name}":
