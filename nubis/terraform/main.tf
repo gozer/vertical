@@ -214,7 +214,7 @@ module "rpms" {
 }
 
 module "backup" {
-  source       = "github.com/nubisproject/nubis-terraform//bucket?ref=v2.2.0"
+  source       = "github.com/nubisproject/nubis-terraform//bucket?ref=v2.3.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -222,6 +222,7 @@ module "backup" {
   purpose      = "backup"
   role_cnt     = "${length(data.aws_availability_zones.available.names)}"
   role         = "${module.worker_0.role},${module.worker_1.role},${module.worker_2.role}"
+  storage_encrypted_at_rest = true
 }
 
 provider "aws" {
