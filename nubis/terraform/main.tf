@@ -20,7 +20,7 @@ locals {
 }
 
 module "worker_0" {
-  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.2.0"
+  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.3.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -61,7 +61,7 @@ module "worker_0" {
 }
 
 module "worker_1" {
-  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.2.0"
+  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.3.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -102,7 +102,7 @@ module "worker_1" {
 }
 
 module "worker_2" {
-  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.2.0"
+  source       = "github.com/nubisproject/nubis-terraform//worker?ref=v2.3.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -175,7 +175,7 @@ resource "aws_autoscaling_notification" "vertical" {
 
 # This one is for vsql
 module "load_balancer_vsql" {
-  source       = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.2.0"
+  source       = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.3.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -194,7 +194,7 @@ module "load_balancer_vsql" {
 }
 
 module "dns_vsql" {
-  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.2.0"
+  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.3.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -203,7 +203,7 @@ module "dns_vsql" {
 }
 
 module "rpms" {
-  source       = "github.com/nubisproject/nubis-terraform//bucket?ref=v2.2.0"
+  source       = "github.com/nubisproject/nubis-terraform//bucket?ref=v2.3.0"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
@@ -230,7 +230,7 @@ provider "aws" {
 }
 
 module "info" {
-  source      = "github.com/nubisproject/nubis-terraform//info?ref=v2.2.0"
+  source      = "github.com/nubisproject/nubis-terraform//info?ref=v2.3.0"
   region      = "${var.region}"
   environment = "${var.environment}"
   account     = "${var.account}"
