@@ -2,6 +2,8 @@
 
 exec &> >(tee >( ts > /var/log/vertical-startup.log)) 2>&1
 
+set -x
+
 NUBIS_PROJECT=$(nubis-metadata NUBIS_PROJECT)
 NUBIS_ENVIRONMENT=$(nubis-metadata NUBIS_ENVIRONMENT)
 AWS_REGION=$(nubis-region)
