@@ -46,9 +46,9 @@ function dump () {
   echo "Performing Raw SQL Dump"
   BACKUP_RV=0
 
-  for table in $(su - $USERNAME -c "$VSQL -tc \"select table_name from all_tables where schema_name='public'"\"" | sort); do
-    vsql -c "SELECT EXPORT_TABLES('','$table')" -t -o $table.sql
-    vsql -At -c "SELECT * FROM $table" | pv --name $table | bzip2 > $table.sql.bz2
+  for table in $(su - $USERNAME -c "$VSQL -tc \"select table_name from all_tables where schema_name='public'\"" | sort); do
+    vsql -c "SELECT EXPORT_TABLES('','$table')" -t -o "$table.sql"
+    vsql -At -c "SELECT * FROM $table" | pv --name "$table" | bzip2 > "$table.sql.bz2"
   done
 
   RV=$?
