@@ -193,6 +193,35 @@ module "load_balancer_vsql" {
   health_check_target = "TCP:5433"
 }
 
+# This one is for vsql
+module "load_balancer_vsql_public" {
+  source       = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.3.0"
+  region       = "${var.region}"
+  environment  = "${var.environment}"
+  account      = "${var.account}"
+  service_name = "${var.service_name}-vsql"
+
+  no_ssl_cert        = "1"
+  backend_protocol   = "tcp"
+  protocol_http      = "tcp"
+  protocol_https     = "tcp"
+  backend_port_http  = "5433"
+  backend_port_https = "5433"
+
+  internal = false
+
+  health_check_target = "TCP:5433"
+}
+
+module "dns_vsql_public" {
+  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.3.0"
+  region       = "${var.region}"
+  environment  = "${var.environment}"
+  account      = "${var.account}"
+  service_name = "${var.service_name}-vsql-public"
+  target       = "${module.load_balancer_vsql.address}"
+}
+
 module "dns_vsql" {
   source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.3.0"
   region       = "${var.region}"
