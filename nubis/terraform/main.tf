@@ -27,7 +27,7 @@ module "worker_0" {
   service_name = "${var.service_name}"
   purpose      = "database"
   ami          = "${var.ami}"
-  elb          = "${module.load_balancer_vsql.name}"
+  elb          = "${module.load_balancer_vsql.name},${module.load_balancer_vsql_public.name}"
 
   nubis_sudo_groups = "${local.nubis_sudo_groups}"
   nubis_user_groups = "${local.nubis_user_groups}"
@@ -68,7 +68,7 @@ module "worker_1" {
   service_name = "${var.service_name}"
   purpose      = "database"
   ami          = "${var.ami}"
-  elb          = "${module.load_balancer_vsql.name}"
+  elb          = "${module.load_balancer_vsql.name},${module.load_balancer_vsql_public.name}"
 
   nubis_sudo_groups = "${local.nubis_sudo_groups}"
   nubis_user_groups = "${local.nubis_user_groups}"
@@ -109,7 +109,7 @@ module "worker_2" {
   service_name = "${var.service_name}"
   purpose      = "database"
   ami          = "${var.ami}"
-  elb          = "${module.load_balancer_vsql.name}"
+  elb          = "${module.load_balancer_vsql.name},${module.load_balancer_vsql_public.name}"
 
   nubis_sudo_groups = "${local.nubis_sudo_groups}"
   nubis_user_groups = "${local.nubis_user_groups}"
@@ -445,6 +445,7 @@ resource "aws_security_group" "vertical" {
 
     security_groups = [
       "${module.load_balancer_vsql.source_security_group_id}",
+      "${module.load_balancer_vsql_public.source_security_group_id}",
       "${aws_security_group.vertical_clients.id}",
     ]
   }
