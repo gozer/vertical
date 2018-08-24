@@ -219,7 +219,7 @@ module "dns_vsql_public" {
   environment  = "${var.environment}"
   account      = "${var.account}"
   service_name = "${var.service_name}-vsql-public"
-  target       = "${module.load_balancer_vsql.address}"
+  target       = "${module.load_balancer_vsql_public.address}"
 }
 
 module "dns_vsql" {
