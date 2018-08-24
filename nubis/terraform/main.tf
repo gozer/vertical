@@ -199,7 +199,7 @@ module "load_balancer_vsql_public" {
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
-  service_name = "${var.service_name}-vsql"
+  service_name = "${var.service_name}-vsql-public"
 
   no_ssl_cert        = "1"
   backend_protocol   = "tcp"
