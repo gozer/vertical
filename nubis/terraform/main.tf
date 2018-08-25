@@ -209,7 +209,7 @@ module "load_balancer_vsql_public" {
   port_http          = "5433"
   backend_port_https = "5433"
   
-  whitelist_cirds = [
+  whitelist_cidrs = [
     "174.92.182.35/32",
   ]
 
