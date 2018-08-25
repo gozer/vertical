@@ -223,6 +223,7 @@ module "dns_vsql_public" {
   account      = "${var.account}"
   service_name = "${var.service_name}-vsql-public"
   target       = "${module.load_balancer_vsql_public.address}"
+  prefix       = "vsql"
 }
 
 module "dns_vsql" {
