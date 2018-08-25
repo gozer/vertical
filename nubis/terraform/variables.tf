@@ -32,9 +32,8 @@ variable "vsql_whitelist" {
   type = "list"
 
   default = [
-    # Mozilla Data Centers
+    # MDC VPNs
     "63.245.208.132/32",
-
     "63.245.208.133/32",
     "63.245.210.132/32",
     "63.245.210.133/32",
