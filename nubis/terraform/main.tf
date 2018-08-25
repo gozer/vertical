@@ -206,6 +206,7 @@ module "load_balancer_vsql_public" {
   protocol_http      = "tcp"
   protocol_https     = "tcp"
   backend_port_http  = "5433"
+  port_http          = "5433"
   backend_port_https = "5433"
 
   internal = false
