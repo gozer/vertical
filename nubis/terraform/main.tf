@@ -195,7 +195,8 @@ module "load_balancer_vsql" {
 
 # This one is for vsql
 module "load_balancer_vsql_public" {
-  source       = "github.com/gozer/nubis-terraform//load_balancer?ref=project%2Felb%2Fsecurity-group"
+  #XXX: Will be in Nubis v2.3.1-next
+  source       = "github.com/gozer/nubis-terraform//load_balancer?ref=issue%2F251%2Fwhitelisting"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
