@@ -256,7 +256,7 @@ module "backup" {
   purpose                   = "backup"
   role_cnt                  = "${length(data.aws_availability_zones.available.names)}"
   role                      = "${module.worker_0.role},${module.worker_1.role},${module.worker_2.role}"
-  storage_encrypted_at_rest = true
+  storage_encrypted_at_rest = false
 }
 
 provider "aws" {
