@@ -46,5 +46,8 @@ variable "vsql_whitelist" {
 
     #sql.telemetry.mozilla.com
     "52.36.66.76/32",
+
+    # Vu Doan at home
+    "76.102.98.122/32",
   ]
 }
