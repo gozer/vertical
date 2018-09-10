@@ -2057,6 +2057,16 @@ CREATE TABLE public.copy_adi_dimensional_by_date
 );
 
 
+CREATE TABLE public.sfmc_send_jobs_unique
+(
+    send_id int NOT NULL,
+    email_name varchar(255),
+    inferred_lang varchar(4),
+    inferred_list varchar(20)
+);
+
+ALTER TABLE public.sfmc_send_jobs_unique ADD CONSTRAINT send_id_UK UNIQUE (send_id) ENABLED;
+
 CREATE PROJECTION autoscale.launches_super /*+basename(launches),createtype(P)*/ 
 (
  added_by_node,
@@ -2152,6 +2162,25 @@ AS
           downNodes.node_subnet_cidr,
           downNodes.status
 UNSEGMENTED ALL NODES;
+
+CREATE PROJECTION public.sfmc_send_jobs_unique /*+createtype(L)*/ 
+(
+ send_id,
+ email_name,
+ inferred_lang,
+ inferred_list
+)
+AS
+ SELECT sfmc_send_jobs_unique.send_id,
+        sfmc_send_jobs_unique.email_name,
+        sfmc_send_jobs_unique.inferred_lang,
+        sfmc_send_jobs_unique.inferred_list
+ FROM public.sfmc_send_jobs_unique
+ ORDER BY sfmc_send_jobs_unique.send_id,
+          sfmc_send_jobs_unique.email_name,
+          sfmc_send_jobs_unique.inferred_lang,
+          sfmc_send_jobs_unique.inferred_list
+SEGMENTED BY hash(sfmc_send_jobs_unique.send_id, sfmc_send_jobs_unique.inferred_lang, sfmc_send_jobs_unique.inferred_list, sfmc_send_jobs_unique.email_name) ALL NODES KSAFE 1;
 
 CREATE PROJECTION public.locations_super_node0001 /*+basename(locations_super)*/ 
 (
@@ -6239,7 +6268,7 @@ AS
  ORDER BY product_channels.product_channel_id,
           product_channels.product_channel,
           product_channels.partner
-UNSEGMENTED NODE v_metrics_node0004;
+UNSEGMENTED ALL NODES;
 
 CREATE PROJECTION public.adi_dimensional_by_date_test /*+createtype(L)*/ 
 (
