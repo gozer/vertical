@@ -23,10 +23,10 @@ s3_backup_file_system_path = []:/home/dbadmin/backup_locks_dir/objects/
 ; s3_encrypt_transport = True
 
 ; Specifies the number of threads for upload/download - backup
-; s3_concurrency_backup = 10
+s3_concurrency_backup = {{ getv "/config/S3/Bucket/Concurrency/Backup" "1" }}
 
 ; Specifies the number of threads for upload/download - restore
-; s3_concurrency_restore = 10
+s3_concurrency_restore = {{ getv "/config/S3/Bucket/Concurrency/Restore" "1" }}
 
 [Misc]
 ; !!Recommended!! Snapshot name
