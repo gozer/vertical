@@ -636,7 +636,7 @@ resource "aws_lb" "public" {
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
 
-  subnets = ["${module.info.public_subnets}"]
+  subnets = ["${split(",",module.info.public_subnets)}"]
 
   tags = {
     Name        = "${var.service_name}-${var.environment}-public"
