@@ -629,3 +629,18 @@ resource "tls_self_signed_cert" "vertical" {
     organization = "Mozilla Nubis"
   }
 }
+
+resource "aws_lb" "public" {
+  name                             = "${var.service_name}-${var.environment}-public"
+  internal                         = false
+  load_balancer_type               = "network"
+  enable_cross_zone_load_balancing = true
+
+  subnets = ["${module.info.public_subnets}"]
+
+  tags = {
+    Name        = "${var.service_name}-${var.environment}-public"
+    Region      = "${var.region}"
+    Environment = "${var.environment}"
+  }
+}
