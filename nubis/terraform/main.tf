@@ -27,7 +27,7 @@ module "worker_0" {
   service_name = "${var.service_name}"
   purpose      = "database"
   ami          = "${var.ami}"
-  elb          = "${module.load_balancer_vsql.name},${module.load_balancer_vsql_public.name}"
+  elb          = "${module.load_balancer_vsql.name}"
 
   nubis_sudo_groups = "${local.nubis_sudo_groups}"
   nubis_user_groups = "${local.nubis_user_groups}"
@@ -68,7 +68,7 @@ module "worker_1" {
   service_name = "${var.service_name}"
   purpose      = "database"
   ami          = "${var.ami}"
-  elb          = "${module.load_balancer_vsql.name},${module.load_balancer_vsql_public.name}"
+  elb          = "${module.load_balancer_vsql.name}"
 
   nubis_sudo_groups = "${local.nubis_sudo_groups}"
   nubis_user_groups = "${local.nubis_user_groups}"
@@ -109,7 +109,7 @@ module "worker_2" {
   service_name = "${var.service_name}"
   purpose      = "database"
   ami          = "${var.ami}"
-  elb          = "${module.load_balancer_vsql.name},${module.load_balancer_vsql_public.name}"
+  elb          = "${module.load_balancer_vsql.name}"
 
   nubis_sudo_groups = "${local.nubis_sudo_groups}"
   nubis_user_groups = "${local.nubis_user_groups}"
@@ -191,40 +191,6 @@ module "load_balancer_vsql" {
   internal = true
 
   health_check_target = "TCP:5433"
-}
-
-# This one is for vsql
-module "load_balancer_vsql_public" {
-  #XXX: Will be in Nubis v2.3.1-next
-  source       = "github.com/gozer/nubis-terraform//load_balancer?ref=issue%2F251%2Fwhitelisting"
-  region       = "${var.region}"
-  environment  = "${var.environment}"
-  account      = "${var.account}"
-  service_name = "${var.service_name}-vsql-public"
-
-  no_ssl_cert        = "1"
-  backend_protocol   = "tcp"
-  protocol_http      = "tcp"
-  protocol_https     = "tcp"
-  backend_port_http  = "5433"
-  port_http          = "5433"
-  backend_port_https = "5433"
-
-  whitelist_cidrs = "${var.vsql_whitelist}"
-
-  internal = false
-
-  health_check_target = "TCP:5433"
-}
-
-module "dns_vsql_public" {
-  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.3.1"
-  region       = "${var.region}"
-  environment  = "${var.environment}"
-  account      = "${var.account}"
-  service_name = "${var.service_name}-public"
-  target       = "${module.load_balancer_vsql_public.address}"
-  prefix       = "vsql"
 }
 
 module "dns_vsql" {
@@ -454,7 +420,6 @@ resource "aws_security_group" "vertical" {
 
     security_groups = [
       "${module.load_balancer_vsql.source_security_group_id}",
-      "${module.load_balancer_vsql_public.source_security_group_id}",
       "${aws_security_group.vertical_clients.id}",
     ]
   }
