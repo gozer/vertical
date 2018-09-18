@@ -644,3 +644,13 @@ resource "aws_lb" "public" {
     Environment = "${var.environment}"
   }
 }
+
+module "dns_vsqlnet_public" {
+  source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.3.1"
+  region       = "${var.region}"
+  environment  = "${var.environment}"
+  account      = "${var.account}"
+  service_name = "${var.service_name}-vsqlnet"
+  target       = "${aws_lb.public.dns_name}"
+  prefix       = "vsqlnet"
+}
