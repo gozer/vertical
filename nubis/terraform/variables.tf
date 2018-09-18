@@ -49,5 +49,8 @@ variable "vsql_whitelist" {
 
     # Vu Doan at home
     "76.102.98.122/32",
+
+    # Gozer at home
+    "174.92.178.186/32",
   ]
 }

@@ -448,7 +448,9 @@ resource "aws_security_group" "vertical" {
     protocol  = "tcp"
     self      = true
 
-    cidr_blocks = ["${formatlist("%s/32",flatten(data.aws_network_interface.public.*.private_ips))}"]
+    cidr_blocks = [
+      "${concat(var.vsql_whitelist, formatlist("%s/32",flatten(data.aws_network_interface.public.*.private_ips)))}",
+    ]
 
     security_groups = [
       "${module.load_balancer_vsql.source_security_group_id}",
