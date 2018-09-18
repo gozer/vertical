@@ -448,6 +448,8 @@ resource "aws_security_group" "vertical" {
     protocol  = "tcp"
     self      = true
 
+    cidr_blocks = ["${formatlist("%s/32",flatten(data.aws_network_interface.public.*.private_ips))}"]
+
     security_groups = [
       "${module.load_balancer_vsql.source_security_group_id}",
       "${module.load_balancer_vsql_public.source_security_group_id}",
@@ -666,6 +668,20 @@ resource "aws_lb_listener" "public" {
   default_action {
     type             = "forward"
     target_group_arn = "${aws_lb_target_group.public.arn}"
+  }
+}
+
+data "aws_network_interface" "public" {
+  count = "${length(split(",",module.info.public_subnets))}"
+
+  filter = {
+    name   = "description"
+    values = ["ELB ${aws_lb.public.arn_suffix}"]
+  }
+
+  filter = {
+    name   = "subnet-id"
+    values = ["${element(split(",",module.info.public_subnets), count.index)}"]
   }
 }
 
