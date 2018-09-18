@@ -658,6 +658,17 @@ resource "aws_lb_target_group" "public" {
   }
 }
 
+resource "aws_lb_listener" "public" {
+  load_balancer_arn = "${aws_lb.front_end.arn}"
+  port              = "5433"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = "${aws_lb_target_group.public.arn}"
+  }
+}
+
 module "dns_vsqlnet_public" {
   source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.3.1"
   region       = "${var.region}"
