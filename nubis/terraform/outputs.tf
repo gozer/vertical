@@ -3,5 +3,5 @@ output "vsql_address" {
 }
 
 output "vsql_address_public" {
-  value = "${module.dns_vsqlnet_public.fqdn}"
+  value = "${module.dns_public.fqdn}"
 }

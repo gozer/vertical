@@ -600,7 +600,7 @@ resource "tls_self_signed_cert" "vertical" {
 }
 
 resource "aws_lb" "public" {
-  name                             = "${var.service_name}-vsqlnet-public-${var.environment}"
+  name                             = "${var.service_name}-public-${var.environment}"
   internal                         = false
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
@@ -608,20 +608,20 @@ resource "aws_lb" "public" {
   subnets = ["${split(",",module.info.public_subnets)}"]
 
   tags = {
-    Name        = "${var.service_name}-vsqlnet-public-${var.environment}"
+    Name        = "${var.service_name}-public-${var.environment}"
     Region      = "${var.region}"
     Environment = "${var.environment}"
   }
 }
 
 resource "aws_lb_target_group" "public" {
-  name     = "${var.service_name}-vsqlnet-public-${var.environment}"
+  name     = "${var.service_name}-public-${var.environment}"
   port     = 5433
   protocol = "TCP"
   vpc_id   = "${module.info.vpc_id}"
 
   tags = {
-    Name        = "${var.service_name}-vsqlnet-public-${var.environment}"
+    Name        = "${var.service_name}-public-${var.environment}"
     Region      = "${var.region}"
     Environment = "${var.environment}"
   }
@@ -652,12 +652,12 @@ data "aws_network_interface" "public" {
   }
 }
 
-module "dns_vsqlnet_public" {
+module "dns_public" {
   source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.3.1"
   region       = "${var.region}"
   environment  = "${var.environment}"
   account      = "${var.account}"
-  service_name = "${var.service_name}-vsqlnet"
+  service_name = "${var.service_name}-public"
   target       = "${aws_lb.public.dns_name}"
-  prefix       = "vsqlnet"
+  prefix       = "public"
 }
