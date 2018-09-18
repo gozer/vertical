@@ -631,7 +631,7 @@ resource "tls_self_signed_cert" "vertical" {
 }
 
 resource "aws_lb" "public" {
-  name                             = "${var.service_name}-${var.environment}-public"
+  name                             = "${var.service_name}-vsqlnet-public-${var.environment}"
   internal                         = false
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
@@ -639,7 +639,20 @@ resource "aws_lb" "public" {
   subnets = ["${split(",",module.info.public_subnets)}"]
 
   tags = {
-    Name        = "${var.service_name}-${var.environment}-public"
+    Name        = "${var.service_name}-vsqlnet-public-${var.environment}"
+    Region      = "${var.region}"
+    Environment = "${var.environment}"
+  }
+}
+
+resource "aws_lb_target_group" "public" {
+  name     = "${var.service_name}-vsqlnet-public-${var.environment}"
+  port     = 5433
+  protocol = "TCP"
+  vpc_id   = "${module.info.vpc_id}"
+
+  tags = {
+    Name        = "${var.service_name}-vsqlnet-public-${var.environment}"
     Region      = "${var.region}"
     Environment = "${var.environment}"
   }
