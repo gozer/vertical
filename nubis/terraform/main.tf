@@ -632,6 +632,16 @@ resource "aws_autoscaling_attachment" "worker_0" {
   alb_target_group_arn   = "${aws_lb_target_group.public.arn}"
 }
 
+resource "aws_autoscaling_attachment" "worker_1" {
+  autoscaling_group_name = "${module.worker_1.autoscaling_group}"
+  alb_target_group_arn   = "${aws_lb_target_group.public.arn}"
+}
+
+resource "aws_autoscaling_attachment" "worker_2" {
+  autoscaling_group_name = "${module.worker_2.autoscaling_group}"
+  alb_target_group_arn   = "${aws_lb_target_group.public.arn}"
+}
+
 resource "aws_lb_listener" "public" {
   load_balancer_arn = "${aws_lb.public.arn}"
   port              = "5433"
