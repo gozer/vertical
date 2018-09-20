@@ -607,6 +607,22 @@ resource "aws_lb" "public" {
 
   subnets = ["${split(",",module.info.public_subnets)}"]
 
+  #XXX: Turn into a dynamic
+  subnet_mapping {
+    subnet_id     = "${element(split(",",module.info.public_subnets),0)}"
+    allocation_id = "${element(aws_eip.vsql.*.id, 0)}"
+  }
+
+  subnet_mapping {
+    subnet_id     = "${element(split(",",module.info.public_subnets),1)}"
+    allocation_id = "${element(aws_eip.vsql.*.id, 1)}"
+  }
+
+  subnet_mapping {
+    subnet_id     = "${element(split(",",module.info.public_subnets),2)}"
+    allocation_id = "${element(aws_eip.vsql.*.id, 2)}"
+  }
+
   tags = {
     Name        = "${var.service_name}-public-${var.environment}"
     Region      = "${var.region}"
