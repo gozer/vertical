@@ -672,7 +672,7 @@ resource "aws_eip" "vsql" {
   vpc   = true
 
   tags = {
-    Name        = "${var.service_name}-public-${var.environment}"
+    Name        = "${var.service_name}-public-${var.environment}-az${count.index}"
     Region      = "${var.region}"
     Environment = "${var.environment}"
   }
