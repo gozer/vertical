@@ -668,7 +668,7 @@ data "aws_network_interface" "public" {
 }
 
 resource "aws_eip" "vsql" {
-  count = "${lenght(split(",",module.info.public_subnets))}"
+  count = "${length(split(",",module.info.public_subnets))}"
   vpc   = true
 
   tags = {
