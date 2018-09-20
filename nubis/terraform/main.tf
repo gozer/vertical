@@ -605,8 +605,6 @@ resource "aws_lb" "public" {
   load_balancer_type               = "network"
   enable_cross_zone_load_balancing = true
 
-  subnets = ["${split(",",module.info.public_subnets)}"]
-
   #XXX: Turn into a dynamic
   subnet_mapping {
     subnet_id     = "${element(split(",",module.info.public_subnets),0)}"
