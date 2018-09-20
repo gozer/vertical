@@ -674,5 +674,5 @@ module "dns_public" {
   account      = "${var.account}"
   service_name = "${var.service_name}-public"
   target       = "${aws_lb.public.dns_name}"
-  prefix       = "public"
+  prefix       = "vsql"
 }
