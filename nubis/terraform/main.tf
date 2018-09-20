@@ -667,6 +667,17 @@ data "aws_network_interface" "public" {
   }
 }
 
+resource "aws_eip" "vsql" {
+  count = "${lenght(split(",",module.info.public_subnets))}"
+  vpc   = true
+
+  tags = {
+    Name        = "${var.service_name}-public-${var.environment}"
+    Region      = "${var.region}"
+    Environment = "${var.environment}"
+  }
+}
+
 module "dns_public" {
   source       = "github.com/nubisproject/nubis-terraform//dns?ref=v2.3.1"
   region       = "${var.region}"
