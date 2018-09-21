@@ -34,6 +34,7 @@ variable "vsql_whitelist" {
   default = [
     # MDC VPNs
     "63.245.208.132/32",
+
     "63.245.208.133/32",
     "63.245.210.132/32",
     "63.245.210.133/32",
@@ -46,11 +47,5 @@ variable "vsql_whitelist" {
 
     #sql.telemetry.mozilla.com
     "52.36.66.76/32",
-
-    # Vu Doan at home
-    "76.102.98.122/32",
-
-    # Gozer at home
-    "174.92.178.186/32",
   ]
 }
