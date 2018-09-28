@@ -47,5 +47,8 @@ variable "vsql_whitelist" {
 
     #sql.telemetry.mozilla.com
     "52.36.66.76/32",
+
+    #John Miller's home
+    "192.76.2.90/32",
   ]
 }
