@@ -54,5 +54,6 @@ variable "vsql_whitelist" {
 
     #Gozer's Home
     "96.22.236.163/32",
+    "76.67.140.225/32",
   ]
 }
