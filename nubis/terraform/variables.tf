@@ -51,6 +51,7 @@ variable "vsql_whitelist" {
     #John Miller's home
     "192.76.2.90/32",
     "69.249.207.121/32",
+    "108.52.99.186/32",
 
     #Gozer's Home
     "96.22.236.163/32",
