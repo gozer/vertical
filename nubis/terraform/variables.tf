@@ -32,6 +32,10 @@ variable "vsql_whitelist" {
   type = "list"
 
   default = [
+    # XXX: The account itself
+    "34.216.154.14/32",
+    "52.24.122.144/32",
+
     # MDC VPNs
     "63.245.208.132/32",
 
