@@ -52,6 +52,10 @@ variable "vsql_whitelist" {
     #sql.telemetry.mozilla.com
     "52.36.66.76/32",
 
+    # STMO in GCP
+    "35.203.170.234/32",
+    "104.196.252.116/32",
+
     #John Miller's home
     "192.76.2.90/32",
     "69.249.207.121/32",
